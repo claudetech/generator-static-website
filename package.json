@@ -1,7 +1,7 @@
 {
   "name": "generator-static-website",
   "keywords": ["yeoman-generator"],
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Generator to create static websites.",
   "main": "index.js",
   "scripts": {

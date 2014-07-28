@@ -45,7 +45,7 @@ module.exports = (grunt) ->
           compress: false
       options:
         use: [
-          require('axis-css')
+          require('axis')
         ]
 
     jade:
