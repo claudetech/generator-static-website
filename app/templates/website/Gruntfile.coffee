@@ -12,13 +12,13 @@ module.exports = (grunt) ->
     watch:
       scripts:
         files: 'assets/js/**/*.coffee'
-        tasks: ['coffee:dev']
+        tasks: ['newer:coffee:dev']
       stylesheets:
         files: 'assets/css/**/*.styl'
-        tasks: ['stylus:dev']
+        tasks: ['newer:stylus:dev']
       views:
         files: 'views/**/*.jade'
-        tasks: ['jade:dev']
+        tasks: ['newer:jade:dev']
       options:
         livereload: livereloadPort
 
