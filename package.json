@@ -1,0 +1,18 @@
+{
+  "name": "generator-static-website",
+  "keywords": ["yeoman-generator"],
+  "version": "0.1.0",
+  "description": "Generator to create static websites.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Perez",
+  "license": "MIT",
+  "dependencies": {
+    "yeoman-generator": "^0.17.1"
+  },
+  "devDependencies": {
+
+  }
+}
