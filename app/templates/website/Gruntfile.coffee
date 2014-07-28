@@ -78,6 +78,9 @@ module.exports = (grunt) ->
           cwd: 'assets'
           src: ['img/**']
           dest: 'public'
+        ,
+          src: 'assets/favicon.ico'
+          dest: 'public/favicon.ico'
         ]
 
     concurrent:
