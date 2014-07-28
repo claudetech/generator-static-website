@@ -19,7 +19,7 @@ sudo npm install -g yo grunt-cli generator-static-website
 To create a new website, run
 
 ```
-yo generator-static-website MY_WEBSITE
+yo static-website MY_WEBSITE
 ```
 
 The directory `MY_WEBSITE` will be generated.
