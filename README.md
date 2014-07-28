@@ -11,8 +11,10 @@ Support for [Axis CSS](http://roots.cx/axis/) integrated.
 Run 
 
 ```
-sudo npm install -g yo grunt-cli generator-static-website
+npm install -g yo grunt-cli generator-static-website
 ```
+
+If you get a permission error, try running `npm` with `sudo`.
 
 ## Usage
 
