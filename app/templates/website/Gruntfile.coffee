@@ -19,6 +19,12 @@ module.exports = (grunt) ->
       views:
         files: 'views/**/*.jade'
         tasks: ['newer:jade:dev']
+      images:
+        files: [
+          'assets/img/**'
+          'assets/favicon.ico'
+        ]
+        tasks: ['newer:copy']
       options:
         livereload: livereloadPort
 
