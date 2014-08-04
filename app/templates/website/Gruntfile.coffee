@@ -1,7 +1,8 @@
 livereloadPort = 35729
 httpServerPort = 9000
 
-fs = require 'fs'
+fs    = require 'fs'
+path  = require 'path'
 
 module.exports = (grunt) ->
   require('load-grunt-tasks')(grunt)
@@ -11,12 +12,15 @@ module.exports = (grunt) ->
 
     watch:
       scripts:
-        files: 'assets/js/**/*.coffee'
+        cwd: 'assets/js'
+        files: 'assets/js**/*.coffee'
         tasks: ['newer:coffee:dev']
       stylesheets:
+        cwd: 'assets/css'
         files: 'assets/css/**/*.styl'
         tasks: ['newer:stylus:dev']
       views:
+        cwd: 'views'
         files: 'views/**/*.jade'
         tasks: ['newer:jade:dev']
       images:
@@ -43,7 +47,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: 'assets'
-          src: ['css/**/*.styl']
+          src: ['css/**/*.styl', '!css/**/_*.styl']
           dest: 'public'
           ext: '.css'
         ]
@@ -59,7 +63,7 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: 'views'
-          src: ['**/*.jade']
+          src: ['**/*.jade', '!**/_*.jade', '!layout.jade']
           dest: 'public'
           ext: '.html'
         ]
@@ -94,6 +98,29 @@ module.exports = (grunt) ->
         tasks: ['connect', 'watch']
         options:
           logConcurrentOutput: true
+
+
+  searchWord = (word, file, callback) ->
+    fs.readdir file, (err, files) ->
+      return unless err is null
+      files.forEach (f) ->
+        filepath = path.join file, f
+        stat = fs.statSync filepath
+        if stat.isDirectory()
+          searchWordDir filepath
+        else
+          fs.readFile filepath, 'utf8', (err, data) ->
+            return unless err is null
+            if data.indexOf(word) > -1
+              callback filepath
+
+  grunt.event.on 'watch', (action, filepath, task) ->
+    return if task == 'images'
+    cwd = path.join __dirname, grunt.config("watch.#{task}.cwd")
+    filename = path.basename filepath, path.extname(filepath)
+    searchWord filename, cwd, (file) ->
+      date = new Date()
+      fs.utimes file, date, date
 
   grunt.registerTask 'compile:dev', ['copy', 'jade:dev', 'coffee:dev', 'stylus:dev']
   grunt.registerTask 'default', ['compile:dev', 'concurrent:start']
