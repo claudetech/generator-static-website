@@ -98,6 +98,7 @@ module.exports = (grunt) ->
         tasks: ['connect', 'watch']
         options:
           logConcurrentOutput: true
+          gruntPath: path.join __dirname, 'node_modules', 'grunt-cli', 'bin', 'grunt'
 
 
   searchWord = (word, file, callback) ->
