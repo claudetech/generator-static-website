@@ -33,9 +33,9 @@ module.exports = (grunt) ->
         files: [
           expand: true
           cwd: 'assets'
-          src: ["js/**/*.coffee"]
-          dest: "public"
-          ext: ".js"
+          src: ['js/**/*.coffee']
+          dest: 'public'
+          ext: '.js'
         ]
 
     stylus:
@@ -44,14 +44,14 @@ module.exports = (grunt) ->
           expand: true
           cwd: 'assets'
           src: ['css/**/*.styl']
-          dest: "public"
-          ext: ".css"
+          dest: 'public'
+          ext: '.css'
         ]
         options:
           compress: false
       options:
         use: [
-          require('axis')
+          require 'axis-css'
         ]
 
     jade:
@@ -60,8 +60,8 @@ module.exports = (grunt) ->
           expand: true
           cwd: 'views'
           src: ['**/*.jade']
-          dest: "public"
-          ext: ".html"
+          dest: 'public'
+          ext: '.html'
         ]
         options:
           pretty: true
