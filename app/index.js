@@ -22,7 +22,9 @@ module.exports = yeoman.generators.NamedBase.extend({
   },
 
   installDependencies: function () {
-    this.npmInstall();
+    if (!this.options.skipInstall) {
+      this.npmInstall();
+    }
   },
 
   initializeGit: function () {

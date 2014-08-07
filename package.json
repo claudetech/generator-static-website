@@ -5,7 +5,7 @@
   "description": "Generator to create static websites.",
   "main": "app/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --compilers coffee:coffee-script/register"
   },
   "author": "Daniel Perez",
   "license": "MIT",
@@ -13,6 +13,10 @@
     "yeoman-generator": "^0.17.1"
   },
   "devDependencies": {
-
+    "coffee-script": "^1.7.1",
+    "expect.js": "^0.3.1",
+    "fs-extra": "^0.9.1",
+    "mocha": "^1.20.0",
+    "tmp": "0.0.23"
   }
 }
