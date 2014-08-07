@@ -37,4 +37,3 @@ describe 'generator-static-website', ->
         expectedFiles = (path.join(dir, APP_NAME, f) for f in files)
         assert.file(expectedFiles)
         done()
-
