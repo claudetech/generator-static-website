@@ -69,6 +69,8 @@ module.exports = (grunt) ->
         ]
         options:
           pretty: true
+          data:
+            lorem: require('lorem-ipsum')
 
     connect:
       server:

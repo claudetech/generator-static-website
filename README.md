@@ -4,7 +4,6 @@ Yeoman generator to create static websites with
 [Stylus](http://learnboost.github.io/stylus/), 
 [Jade](http://jade-lang.com/) and 
 [CoffeeScript](http://coffeescript.org/).
-Support for [Axis CSS](http://roots.cx/axis/) integrated.
 
 ## Installation
 
@@ -31,3 +30,13 @@ You can then start coding.
 cd MY_WEBSITE
 grunt
 ```
+
+## Features
+
+* Support for [Axis CSS](http://roots.cx/axis/).
+* [Lorem Ipsum generator](https://github.com/knicklabs/lorem-ipsum.js):
+  You can use the lorem ipsum generator as the function `lorem` in all Jade templates:
+
+  ```slim
+  p= lorem({units: 'paragraphs', count: 2})
+  ```
