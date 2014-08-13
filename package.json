@@ -1,11 +1,18 @@
 {
   "name": "generator-static-website",
   "keywords": ["yeoman-generator"],
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Generator to create static websites.",
   "main": "app/index.js",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/claudetech/generator-static-website"
+  },
+  "bugs": {
+    "url": "https://github.com/claudetech/generator-static-website/issues"
   },
   "author": "Daniel Perez",
   "license": "MIT",
