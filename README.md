@@ -31,6 +31,16 @@ cd MY_WEBSITE
 grunt
 ```
 
+### CSS engine
+
+The default CSS engine is [Stylus](http://learnboost.github.io/stylus/),
+however, you can use [less css](http://lesscss.org/) if you wish, by adding
+`--css=less` to the yo command:
+
+```
+yo static-website MY_WEBSITE --css=less
+```
+
 ## Features
 
 * Support for [Axis CSS](http://roots.cx/axis/).
