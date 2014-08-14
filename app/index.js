@@ -4,6 +4,10 @@ var yeoman = require('yeoman-generator'),
 module.exports = yeoman.generators.NamedBase.extend({
   constructor: function () {
     yeoman.generators.NamedBase.apply(this, arguments);
+    this.option('css', {
+      desc: 'Select CSS templating.',
+      defaults: 'stylus'
+    });
   },
 
   prepareDir: function () {
@@ -19,6 +23,16 @@ module.exports = yeoman.generators.NamedBase.extend({
   copyFiles: function () {
     this.sourceRoot(path.join(__dirname, 'templates/website'));
     this.directory('.', '.');
+  },
+
+  copyCss: function () {
+    if (this.options.css !== 'stylus' && this.options.css !== 'less') {
+      this.log('Wrong CSS template engine ' + this.options.css);
+      this.log('Using stylus instead.');
+      this.options.css = 'stylus';
+    }
+    this.sourceRoot(path.join(__dirname, 'templates', 'assets', this.options.css));
+    this.directory('.', 'assets/css');
   },
 
   installDependencies: function () {

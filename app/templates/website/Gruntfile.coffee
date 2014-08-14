@@ -17,8 +17,13 @@ module.exports = (grunt) ->
         tasks: ['newer:coffee:dev']
       stylesheets:
         cwd: 'assets/css'
+        <% if(options.css === 'stylus') { %>
         files: 'assets/css/**/*.styl'
         tasks: ['newer:stylus:dev']
+        <% } else if (options.css === 'less') { %>
+        files: 'assets/css/**/*.less'
+        tasks: ['newer:less:dev']
+        <% } %>
       views:
         cwd: 'views'
         files: 'views/**/*.jade'
@@ -42,6 +47,7 @@ module.exports = (grunt) ->
           ext: '.js'
         ]
 
+    <% if(options.css === 'stylus') { %>
     stylus:
       dev:
         files: [
@@ -57,6 +63,17 @@ module.exports = (grunt) ->
         use: [
           require 'axis-css'
         ]
+    <% } else if(options.css === 'less') { %>
+    less:
+      dev:
+        files: [
+          expand: true
+          cwd: 'assets'
+          src: ['css/**/*.less', '!css/**/_*.less']
+          dest: 'public'
+          ext: '.css'
+        ]
+    <% } %>
 
     jade:
       dev:
@@ -125,5 +142,11 @@ module.exports = (grunt) ->
       date = new Date()
       fs.utimes file, date, date
 
-  grunt.registerTask 'compile:dev', ['copy', 'jade:dev', 'coffee:dev', 'stylus:dev']
+  grunt.registerTask 'compile:dev', [
+    'copy'
+    'jade:dev'   <% if (options.css == 'stylus') { %>
+    'stylus:dev' <% } else if (options.css == 'less') { %>
+    'less:dev'   <% } %>
+    'coffee:dev'
+  ]
   grunt.registerTask 'default', ['compile:dev', 'concurrent:start']
