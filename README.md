@@ -33,20 +33,34 @@ grunt
 
 ### CSS engine
 
-The default CSS engine is [Stylus](http://learnboost.github.io/stylus/),
-however, you can use [less css](http://lesscss.org/) if you wish, by adding
+The default CSS engine is [Stylus](http://learnboost.github.io/stylus/).
+However, you can use [less css](http://lesscss.org/) if you wish, by adding
 `--css=less` to the yo command:
 
 ```
 yo static-website MY_WEBSITE --css=less
 ```
 
+### HTML template engine
+
+The default HTML template engine is [Jade](http://jade-lang.com/).
+However, you can use [ejs (with layouts)](https://github.com/RandomEtc/ejs-locals) if you wish, by adding
+`--html=ejs` to the yo command:
+
+```
+yo static-website MY_WEBSITE --html=ejs
+```
+
 ## Features
 
-* Support for [Axis CSS](http://roots.cx/axis/).
+* Support for [Axis CSS](http://roots.cx/axis/) when using Stylus
 * [Lorem Ipsum generator](https://github.com/knicklabs/lorem-ipsum.js):
-  You can use the lorem ipsum generator as the function `lorem` in all Jade templates:
+  You can use the lorem ipsum generator as the function `lorem` in all Jade/EJS templates:
 
   ```slim
   p= lorem({units: 'paragraphs', count: 2})
+  ```
+
+  ```ejs
+  <%= lorem({units: 'paragraphs', count: 2}) %>
   ```
