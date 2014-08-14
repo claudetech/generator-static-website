@@ -110,7 +110,7 @@ module.exports = (grunt) ->
         filepath = path.join file, f
         stat = fs.statSync filepath
         if stat.isDirectory()
-          searchWordDir filepath
+          searchWord word, filepath, callback
         else
           fs.readFile filepath, 'utf8', (err, data) ->
             return unless err is null
