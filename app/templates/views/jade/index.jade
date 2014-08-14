@@ -6,12 +6,9 @@ block content
 
   h2 Documentation
   ul
-    li: a(href='https://github.com/claudetech/leaves') Leaves
-    li: a(href='http://jade-lang.com/') jade
-    <% if (options.css === 'stylus') { %>
+    li: a(href='http://claudetech/github.io/leaves') Leaves
+    li: a(href='http://jade-lang.com/') jade <% if (options.css === 'stylus') { %>
     li: a(href='http://learnboost.github.io/stylus/') Stylus
-    <% } else if (options.css === 'less') { %>
-    li: a(href='http://lesscss.org/') Less
-    <% } %>
-    li: a(href='http://roots.cx/axis/') Axis
+    li: a(href='http://roots.cx/axis/') Axis <% } else if (options.css === 'less') { %>
+    li: a(href='http://lesscss.org/') Less   <% } %>
     li: a(href='http://coffeescript.org/') CoffeeScript

@@ -46,7 +46,6 @@ module.exports = (grunt) ->
           dest: 'public'
           ext: '.js'
         ]
-
     <% if(options.css === 'stylus') { %>
     stylus:
       dev:
@@ -73,8 +72,7 @@ module.exports = (grunt) ->
           dest: 'public'
           ext: '.css'
         ]
-    <% } %>
-
+    <% } if(options.html === 'jade') { %>
     jade:
       dev:
         files: [
@@ -88,7 +86,19 @@ module.exports = (grunt) ->
           pretty: true
           data:
             lorem: require('lorem-ipsum')
-
+    <% } else if(options.html === 'ejs') { %>
+    ejs:
+      dev:
+        files: [
+          expand: true
+          cwd: 'views'
+          src: ['**/*.ejs', '!**/_*.ejs', '!layout.ejs']
+          dest: 'public'
+          ext: '.html'
+        ]
+        options:
+          lorem: require('lorem-ipsum')
+    <% } %>
     connect:
       server:
         options:
@@ -143,8 +153,9 @@ module.exports = (grunt) ->
       fs.utimes file, date, date
 
   grunt.registerTask 'compile:dev', [
-    'copy'
-    'jade:dev'   <% if (options.css == 'stylus') { %>
+    'copy'       <% if (options.html == 'jade') { %>
+    'jade:dev'   <% } else if(options.html == 'ejs') { %>
+    'ejs:dev'    <% } if (options.css == 'stylus') { %>
     'stylus:dev' <% } else if (options.css == 'less') { %>
     'less:dev'   <% } %>
     'coffee:dev'

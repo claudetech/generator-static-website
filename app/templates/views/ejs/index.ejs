@@ -1,0 +1,16 @@
+<%% layout('layout') -%>
+
+<h1>Welcome to Leaves!</h1>
+<p>
+  You've now created a brand new Leaves site. The page you're looking at is the home page which is located at <b>views/index.jade</b>.
+</p>
+
+<h2>Documentation</h2>
+<ul>
+  <li><a href="http://claudetech/github.io/leaves">Leaves</a></li>
+  <li><a href="https://github.com/RandomEtc/ejs-locals">ejs (with layouts)</a></li><% if (options.css === 'stylus') { %>
+  <li><a href="http://learnboost.github.io/stylus/">Stylus</a></li>
+  <li><a href="http://roots.cx/axis/">Axis</a></li><% } else if (options.css === 'less') { %>
+  <li><a href="http://lesscss.org/">Less</a></li><% } %>
+  <li><a href="http://coffeescript.org/">CoffeeScript</a></li>
+</ul>

@@ -8,6 +8,10 @@ module.exports = yeoman.generators.NamedBase.extend({
       desc: 'Select CSS templating.',
       defaults: 'stylus'
     });
+    this.option('html', {
+      desc: 'Select HTML templating.',
+      defaults: 'jade'
+    });
   },
 
   prepareDir: function () {
@@ -35,6 +39,16 @@ module.exports = yeoman.generators.NamedBase.extend({
     this.directory('.', 'assets/css');
   },
 
+  copyViews: function() {
+    if (this.options.html !== 'jade' && this.options.html !== 'ejs') {
+      this.log('Wrong HTML template engine ' + this.options.html);
+      this.log('Using jade instead.');
+      this.options.html = 'ejs';
+    }
+    this.sourceRoot(path.join(__dirname, 'templates', 'views', this.options.html));
+    this.directory('.', 'views');
+  },
+
   installDependencies: function () {
     if (!this.options.skipInstall) {
       this.npmInstall();
@@ -42,6 +56,8 @@ module.exports = yeoman.generators.NamedBase.extend({
   },
 
   initializeGit: function () {
-    this.spawnCommand('git', ['init']);
+    if (!this.options.skipGit) {
+      this.spawnCommand('git', ['init']);
+    }
   }
 });
