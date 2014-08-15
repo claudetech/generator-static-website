@@ -26,8 +26,13 @@ module.exports = (grunt) ->
         <% } %>
       views:
         cwd: 'views'
+        <% if(options.html === 'jade') { %>
         files: 'views/**/*.jade'
         tasks: ['newer:jade:dev']
+        <% } else if (options.html === 'ejs') { %>
+        files: 'views/**/*.ejs'
+        tasks: ['newer:ejs:dev']
+        <% } %>
       images:
         files: [
           'assets/img/**'
