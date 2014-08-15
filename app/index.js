@@ -43,7 +43,7 @@ module.exports = yeoman.generators.NamedBase.extend({
     if (this.options.html !== 'jade' && this.options.html !== 'ejs') {
       this.log('Wrong HTML template engine ' + this.options.html);
       this.log('Using jade instead.');
-      this.options.html = 'ejs';
+      this.options.html = 'jade';
     }
     this.sourceRoot(path.join(__dirname, 'templates', 'views', this.options.html));
     this.directory('.', 'views');
