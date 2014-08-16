@@ -14,25 +14,19 @@ module.exports = (grunt) ->
       scripts:
         cwd: 'assets/js'
         files: 'assets/js**/*.coffee'
-        tasks: ['newer:coffee:dev']
+        tasks: ['brerror:newer:coffee:dev']
       stylesheets:
-        cwd: 'assets/css'
-        <% if(options.css === 'stylus') { %>
+        cwd: 'assets/css' <% if(options.css === 'stylus') { %>
         files: 'assets/css/**/*.styl'
-        tasks: ['newer:stylus:dev']
-        <% } else if (options.css === 'less') { %>
+        tasks: ['brerror:newer:stylus:dev'] <% } else if (options.css === 'less') { %>
         files: 'assets/css/**/*.less'
-        tasks: ['newer:less:dev']
-        <% } %>
+        tasks: ['brerror:newer:less:dev'] <% } %>
       views:
-        cwd: 'views'
-        <% if(options.html === 'jade') { %>
+        cwd: 'views' <% if(options.html === 'jade') { %>
         files: 'views/**/*.jade'
-        tasks: ['newer:jade:dev']
-        <% } else if (options.html === 'ejs') { %>
+        tasks: ['brerror:newer:jade:dev'] <% } else if (options.html === 'ejs') { %>
         files: 'views/**/*.ejs'
-        tasks: ['newer:ejs:dev']
-        <% } %>
+        tasks: ['brerror:newer:ejs:dev']  <% } %>
       images:
         files: [
           'assets/img/**'
@@ -129,7 +123,7 @@ module.exports = (grunt) ->
 
     concurrent:
       start:
-        tasks: ['connect', 'watch']
+        tasks: ['connect', 'watch', 'brerror:server']
         options:
           logConcurrentOutput: true
           gruntPath: path.join __dirname, 'node_modules', 'grunt-cli', 'bin', 'grunt'
