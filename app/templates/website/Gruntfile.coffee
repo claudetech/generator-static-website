@@ -11,10 +11,14 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON 'package.json'
 
     watch:
-      scripts:
+      coffee:
         cwd: 'assets/js'
         files: 'assets/js**/*.coffee'
         tasks: ['brerror:newer:coffee:dev']
+      js:
+        cwd: 'assets/js'
+        files: 'assets/js/**/*.js'
+        tasks: ['newer:copy:js']
       stylesheets:
         cwd: 'assets/css' <% if(options.css === 'stylus') { %>
         files: 'assets/css/**/*.styl'
@@ -32,7 +36,7 @@ module.exports = (grunt) ->
           'assets/img/**'
           'assets/favicon.ico'
         ]
-        tasks: ['newer:copy']
+        tasks: ['newer:copy:images']
       options:
         livereload: livereloadPort
 
@@ -110,7 +114,7 @@ module.exports = (grunt) ->
           livereload: true
 
     copy:
-      main:
+      images:
         files: [
           expand: true
           cwd: 'assets'
@@ -119,6 +123,13 @@ module.exports = (grunt) ->
         ,
           src: 'assets/favicon.ico'
           dest: 'public/favicon.ico'
+        ]
+      js:
+        files: [
+          expand: true
+          cwd: 'assets'
+          src: 'js/**/*.js'
+          dest: 'public'
         ]
 
     concurrent:
