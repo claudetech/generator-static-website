@@ -1,8 +1,17 @@
 livereloadPort = 35729
 httpServerPort = 9000
 
-fs    = require 'fs'
-path  = require 'path'
+fs         = require 'fs'
+path       = require 'path'
+loremIpsum = require 'lorem-ipsum'
+
+lorem = (count, options={}) ->
+  if typeof count == 'number'
+    options.count = count
+  else
+    options = count ? {}
+  options.units ?= 'words'
+  loremIpsum options
 
 module.exports = (grunt) ->
   require('load-grunt-tasks')(grunt)
@@ -88,7 +97,7 @@ module.exports = (grunt) ->
         options:
           pretty: true
           data:
-            lorem: require('lorem-ipsum')
+            lorem: lorem
     <% } else if(options.html === 'ejs') { %>
     ejs:
       dev:
@@ -100,7 +109,7 @@ module.exports = (grunt) ->
           ext: '.html'
         ]
         options:
-          lorem: require('lorem-ipsum')
+          lorem: lorem
     <% } %>
     connect:
       server:
