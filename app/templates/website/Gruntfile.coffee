@@ -25,9 +25,11 @@ module.exports = (grunt) ->
         files: 'assets/js**/*.coffee'
         tasks: ['brerror:newer:coffee:dev']
       js:
-        cwd: 'assets/js'
         files: 'assets/js/**/*.js'
         tasks: ['newer:copy:js']
+      css:
+        files: 'assets/css/**/*.css'
+        tasks: ['newer:copy:css']
       stylesheets:
         cwd: 'assets/css' <% if(options.css === 'stylus') { %>
         files: 'assets/css/**/*.styl'
@@ -140,6 +142,13 @@ module.exports = (grunt) ->
           src: 'js/**/*.js'
           dest: 'public'
         ]
+      css:
+        files: [
+          expand: true
+          cwd: 'assets'
+          src: 'css/**/*.css'
+          dest: 'public'
+        ]
 
     concurrent:
       start:
@@ -164,7 +173,7 @@ module.exports = (grunt) ->
               callback filepath
 
   grunt.event.on 'watch', (action, filepath, task) ->
-    return if task == 'images'
+    return if task == 'images' || task == 'css' || task == 'js'
     cwd = path.join __dirname, grunt.config("watch.#{task}.cwd")
     filename = path.basename filepath, path.extname(filepath)
     searchWord filename, cwd, (file) ->
