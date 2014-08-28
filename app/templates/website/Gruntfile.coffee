@@ -20,16 +20,13 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON 'package.json'
 
     watch:
+      public:
+        files: ['assets/**/*', '!assets/css/**/*.styl', '!assets/css/**/*.less', '!assets/js/**/*.coffee']
+        tasks: ['newer:copy:public']
       coffee:
         cwd: 'assets/js'
         files: 'assets/js**/*.coffee'
         tasks: ['brerror:newer:coffee:dev']
-      js:
-        files: 'assets/js/**/*.js'
-        tasks: ['newer:copy:js']
-      css:
-        files: 'assets/css/**/*.css'
-        tasks: ['newer:copy:css']
       stylesheets:
         cwd: 'assets/css' <% if(options.css === 'stylus') { %>
         files: 'assets/css/**/*.styl'
@@ -42,12 +39,6 @@ module.exports = (grunt) ->
         tasks: ['brerror:newer:jade:dev'] <% } else if (options.html === 'ejs') { %>
         files: 'views/**/*.ejs'
         tasks: ['brerror:newer:ejs:dev']  <% } %>
-      images:
-        files: [
-          'assets/img/**'
-          'assets/favicon.ico'
-        ]
-        tasks: ['newer:copy:images']
       options:
         livereload: livereloadPort
 
@@ -125,30 +116,11 @@ module.exports = (grunt) ->
           livereload: true
 
     copy:
-      images:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: ['img/**']
-          dest: 'public'
-        ,
-          src: 'assets/favicon.ico'
-          dest: 'public/favicon.ico'
-        ]
-      js:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: 'js/**/*.js'
-          dest: 'public'
-        ]
-      css:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: 'css/**/*.css'
-          dest: 'public'
-        ]
+      public:
+        expand: true
+        cwd: 'assets'
+        src: ['**/*', '!css/**/*.styl', '!css/**/*.less', '!js/**/*.coffee']
+        dest: 'public'
 
     concurrent:
       start:
@@ -173,7 +145,7 @@ module.exports = (grunt) ->
               callback filepath
 
   grunt.event.on 'watch', (action, filepath, task) ->
-    return if task == 'images' || task == 'css' || task == 'js'
+    return unless task in ['coffee', 'stylesheets', 'views']
     cwd = path.join __dirname, grunt.config("watch.#{task}.cwd")
     filename = path.basename filepath, path.extname(filepath)
     searchWord filename, cwd, (file) ->
