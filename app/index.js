@@ -12,6 +12,7 @@ module.exports = yeoman.generators.NamedBase.extend({
       desc: 'Select HTML templating.',
       defaults: 'jade'
     });
+    this.appname = this.name;
   },
 
   initializing: {
