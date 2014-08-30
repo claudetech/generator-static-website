@@ -12,6 +12,10 @@ module.exports = yeoman.generators.NamedBase.extend({
       desc: 'Select HTML templating.',
       defaults: 'jade'
     });
+    this.option('save-config', {
+      desc: 'Saves config in .yo-rc.json',
+      defaults: true
+    });
     this.appname = this.name;
   },
 
@@ -70,5 +74,13 @@ module.exports = yeoman.generators.NamedBase.extend({
         this.bowerInstall();
       }
     },
+  },
+
+  end: {
+    saveConfig: function () {
+      if (this.options['save-config']) {
+        this.config.save();
+      }
+    }
   }
 });
