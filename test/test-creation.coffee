@@ -26,6 +26,8 @@ describe 'generator-static-website', ->
     app = test.createGenerator 'static-website', [appDir], [APP_NAME], {skipInstall: true, skipGit: true}
 
   baseFiles = [
+    'bower.json'
+    '.bowerrc'
     '.gitignore'
     'Gruntfile.coffee'
     'assets/favicon.ico'

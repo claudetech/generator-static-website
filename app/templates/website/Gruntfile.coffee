@@ -23,6 +23,9 @@ module.exports = (grunt) ->
       public:
         files: ['assets/**/*', '!assets/css/**/*.styl', '!assets/css/**/*.less', '!assets/js/**/*.coffee']
         tasks: ['newer:copy:public']
+      components:
+        files: ['.components/**/*', '!**/src/**']
+        tasks: ['newer:copy:components']
       coffee:
         cwd: 'assets/js'
         files: 'assets/js**/*.coffee'
@@ -121,6 +124,11 @@ module.exports = (grunt) ->
         cwd: 'assets'
         src: ['**/*', '!css/**/*.styl', '!css/**/*.less', '!js/**/*.coffee']
         dest: 'public'
+      components:
+        expand: true
+        cwd: '.components'
+        src: ['**/*', '!**/src/**']
+        dest: 'public/components'
 
     concurrent:
       start:

@@ -1,0 +1,9 @@
+{
+  "name": "<%= _.slugify(appname) %>",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "*"
+  },
+  "devDependencies": {}
+}
