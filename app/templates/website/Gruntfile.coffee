@@ -28,7 +28,7 @@ module.exports = (grunt) ->
         tasks: ['newer:copy:components']
       coffee:
         cwd: 'assets/js'
-        files: 'assets/js**/*.coffee'
+        files: 'assets/js/**/*.coffee'
         tasks: ['brerror:newer:coffee:dev']
       stylesheets:
         cwd: 'assets/css' <% if(options.css === 'stylus') { %>
