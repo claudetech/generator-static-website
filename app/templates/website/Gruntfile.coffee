@@ -31,17 +31,17 @@ module.exports = (grunt) ->
         files: 'assets/js/**/*.coffee'
         tasks: ['brerror:newer:coffee:dev']
       stylesheets:
-        cwd: 'assets/css' <% if(options.css === 'stylus') { %>
+        cwd: 'assets/css'<% if(options.css === 'stylus') { %>
         files: 'assets/css/**/*.styl'
-        tasks: ['brerror:newer:stylus:dev'] <% } else if (options.css === 'less') { %>
+        tasks: ['brerror:newer:stylus:dev']<% } else if (options.css === 'less') { %>
         files: 'assets/css/**/*.less'
-        tasks: ['brerror:newer:less:dev'] <% } %>
+        tasks: ['brerror:newer:less:dev']<% } %>
       views:
-        cwd: 'views' <% if(options.html === 'jade') { %>
+        cwd: 'views'<% if(options.html === 'jade') { %>
         files: 'views/**/*.jade'
-        tasks: ['brerror:newer:jade:dev'] <% } else if (options.html === 'ejs') { %>
+        tasks: ['brerror:newer:jade:dev']<% } else if (options.html === 'ejs') { %>
         files: 'views/**/*.ejs'
-        tasks: ['brerror:newer:ejs:dev']  <% } %>
+        tasks: ['brerror:newer:ejs:dev']<% } %>
       options:
         livereload: livereloadPort
 
@@ -54,7 +54,7 @@ module.exports = (grunt) ->
           dest: 'public'
           ext: '.js'
         ]
-    <% if(options.css === 'stylus') { %>
+<% if(options.css === 'stylus') { %>
     stylus:
       dev:
         files: [
@@ -70,7 +70,7 @@ module.exports = (grunt) ->
         use: [
           require 'axis-css'
         ]
-    <% } else if(options.css === 'less') { %>
+<% } else if(options.css === 'less') { %>
     less:
       dev:
         files: [
@@ -80,7 +80,7 @@ module.exports = (grunt) ->
           dest: 'public'
           ext: '.css'
         ]
-    <% } if(options.html === 'jade') { %>
+<% } if(options.html === 'jade') { %>
     jade:
       dev:
         files: [
@@ -94,7 +94,7 @@ module.exports = (grunt) ->
           pretty: true
           data:
             lorem: lorem
-    <% } else if(options.html === 'ejs') { %>
+<% } else if(options.html === 'ejs') { %>
     ejs:
       dev:
         files: [
@@ -106,7 +106,7 @@ module.exports = (grunt) ->
         ]
         options:
           lorem: lorem
-    <% } %>
+<% } %>
     connect:
       server:
         options:
@@ -161,11 +161,11 @@ module.exports = (grunt) ->
       fs.utimes file, date, date
 
   grunt.registerTask 'compile:dev', [
-    'copy'       <% if (options.html == 'jade') { %>
-    'jade:dev'   <% } else if(options.html == 'ejs') { %>
-    'ejs:dev'    <% } if (options.css == 'stylus') { %>
-    'stylus:dev' <% } else if (options.css == 'less') { %>
-    'less:dev'   <% } %>
+    'copy'<% if (options.html == 'jade') { %>
+    'jade:dev'<% } else if(options.html == 'ejs') { %>
+    'ejs:dev'<% } if (options.css == 'stylus') { %>
+    'stylus:dev'<% } else if (options.css == 'less') { %>
+    'less:dev'<% } %>
     'coffee:dev'
   ]
   grunt.registerTask 'default', ['compile:dev', 'concurrent:start']
