@@ -24,7 +24,7 @@ module.exports = (grunt) ->
         files: ['assets/**/*', '!assets/css/**/*.styl', '!assets/css/**/*.less', '!assets/js/**/*.coffee']
         tasks: ['newer:copy:public']
       components:
-        files: ['.components/**/*', '!**/src/**']
+        files: ['.components/*']
         tasks: ['newer:copy:components']
       coffee:
         cwd: 'assets/js'
