@@ -137,28 +137,28 @@ module.exports = (grunt) ->
           logConcurrentOutput: true
           gruntPath: path.join __dirname, 'node_modules', 'grunt-cli', 'bin', 'grunt'
 
+    newer:
+      options:
+        override: (detail, include) ->
+          cwd = path.join __dirname, grunt.config("#{detail.task}.#{detail.target}.files.0.cwd")
+          baseFile = path.join __dirname, detail.path
+          content = fs.readFileSync baseFile, 'utf8'
+          compile = needsCompile cwd, baseFile, detail.time, content
+          include(compile)
 
-  searchWord = (word, file, callback) ->
-    fs.readdir file, (err, files) ->
-      return unless err is null
-      files.forEach (f) ->
+  needsCompile = (file, baseFile, time, content) ->
+    stat = fs.statSync file
+    if stat.isDirectory()
+      dirFiles = fs.readdirSync(file)
+      for f in dirFiles
         filepath = path.join file, f
-        stat = fs.statSync filepath
-        if stat.isDirectory()
-          searchWord word, filepath, callback
-        else
-          fs.readFile filepath, 'utf8', (err, data) ->
-            return unless err is null
-            if data.indexOf(word) > -1
-              callback filepath
-
-  grunt.event.on 'watch', (action, filepath, task) ->
-    return unless task in ['coffee', 'stylesheets', 'views']
-    cwd = path.join __dirname, grunt.config("watch.#{task}.cwd")
-    filename = path.basename filepath, path.extname(filepath)
-    searchWord filename, cwd, (file) ->
-      date = new Date()
-      fs.utimes file, date, date
+        return true if needsCompile filepath, baseFile, time, content
+    else
+      return false if file == baseFile || stat.mtime < time
+      filename = path.basename(file)
+      word = filename.substr(0, filename.lastIndexOf('.'))
+      return true if content.indexOf(word) > -1
+    return false
 
   grunt.registerTask 'compile:dev', [
     'copy'<% if (options.html == 'jade') { %>
