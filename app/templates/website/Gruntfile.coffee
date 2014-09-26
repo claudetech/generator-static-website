@@ -140,7 +140,9 @@ module.exports = (grunt) ->
     newer:
       options:
         override: (detail, include) ->
-          cwd = path.join __dirname, grunt.config("#{detail.task}.#{detail.target}.files.0.cwd")
+          cwdPath = grunt.config("#{detail.task}.#{detail.target}.files.0.cwd")
+          return include() unless cwdPath?
+          cwd = path.join __dirname, cwdPath
           baseFile = path.join __dirname, detail.path
           content = fs.readFileSync baseFile, 'utf8'
           compile = needsCompile cwd, baseFile, detail.time, content
