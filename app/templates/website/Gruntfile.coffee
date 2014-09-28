@@ -39,10 +39,10 @@ module.exports = (grunt) ->
 
     watch:
       public:
-        files: ['assets/**/*', '!assets/css/**/*.styl', '!assets/css/**/*.less', '!assets/js/**/*.coffee']
+        files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>','!assets/js/**/*.coffee']
         tasks: ['newer:copy:public']
         options:
-          event: ['deleted']
+          event: ['changed']
       publicGlob:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
         tasks: ['copy:public', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
@@ -65,13 +65,13 @@ module.exports = (grunt) ->
         files: 'assets/css/**/*.<%= cssExt %>'
         tasks: ['brerror:newer:<%= cssTask %>:dev']
         options:
-          events: ['changed']
+          event: ['changed']
       stylesheetsGlob:
         cwd: 'assets/css'
         files: 'assets/css/**/*.<%= cssExt %>'
         tasks: ['brerror:newer:<%= cssTask %>:dev', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
         options:
-          events: ['added', 'deleted']
+          event: ['added', 'deleted']
       views:
         cwd: 'views'
         files: 'views/**/*.<%= htmlExt %>'
