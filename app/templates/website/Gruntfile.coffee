@@ -12,6 +12,24 @@ lorem = (count, options={}) ->
     options = count ? {}
   options.units ?= 'words'
   loremIpsum options
+<% if (options.css === 'stylus') { var cssTask = 'stylus', cssExt = 'styl'; } else { var cssTask = 'less', cssExt = 'less'; } %>
+<% if (options.html === 'jade') { var htmlTask = 'jade', htmlExt = 'jade'; } else { var htmlTask = 'ejs', htmlExt = 'ejs'; } %>
+cssFiles = [
+  expand: true
+  cwd: 'assets'
+  src: ['css/**/*.<%= cssExt %>', '!css/**/_*. <%= cssExt %>']
+  dest: 'public'
+  ext: '.css'
+]
+
+htmlFiles = [
+  expand: true
+  cwd: 'views'
+  src: ['**/*.<%= htmlExt %>', '!**/_*.<%= htmlExt %>', '!layout.<%= htmlExt %>']
+  dest: 'public'
+  ext: '.html'
+]
+
 
 module.exports = (grunt) ->
   require('load-grunt-tasks')(grunt)
@@ -23,25 +41,41 @@ module.exports = (grunt) ->
       public:
         files: ['assets/**/*', '!assets/css/**/*.styl', '!assets/css/**/*.less', '!assets/js/**/*.coffee']
         tasks: ['newer:copy:public']
-      components:
-        files: ['.components/*']
-        tasks: ['newer:copy:components']
+        options:
+          event: ['deleted']
+      publicGlob:
+        files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
+        tasks: ['copy:public', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        options:
+          event: ['added', 'deleted']
       coffee:
         cwd: 'assets/js'
         files: 'assets/js/**/*.coffee'
         tasks: ['brerror:newer:coffee:dev']
+        options:
+          event: ['changed']
+      coffeeGlob:
+        cwd: 'assets/js'
+        files: 'assets/js/**/*.coffee'
+        tasks: ['brerror:newer:coffee:dev', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        options:
+          event: ['added', 'deleted']
       stylesheets:
-        cwd: 'assets/css'<% if(options.css === 'stylus') { %>
-        files: 'assets/css/**/*.styl'
-        tasks: ['brerror:newer:stylus:dev']<% } else if (options.css === 'less') { %>
-        files: 'assets/css/**/*.less'
-        tasks: ['brerror:newer:less:dev']<% } %>
+        cwd: 'assets/css'
+        files: 'assets/css/**/*.<%= cssExt %>'
+        tasks: ['brerror:newer:<%= cssTask %>:dev']
+        options:
+          events: ['changed']
+      stylesheetsGlob:
+        cwd: 'assets/css'
+        files: 'assets/css/**/*.<%= cssExt %>'
+        tasks: ['brerror:newer:<%= cssTask %>:dev', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        options:
+          events: ['added', 'deleted']
       views:
-        cwd: 'views'<% if(options.html === 'jade') { %>
-        files: 'views/**/*.jade'
-        tasks: ['brerror:newer:jade:dev']<% } else if (options.html === 'ejs') { %>
-        files: 'views/**/*.ejs'
-        tasks: ['brerror:newer:ejs:dev']<% } %>
+        cwd: 'views'
+        files: 'views/**/*.<%= htmlExt %>'
+        tasks: ['brerror:newer:<%= htmlTask %>:dev', 'glob:dev']
       options:
         livereload: livereloadPort
 
@@ -57,15 +91,13 @@ module.exports = (grunt) ->
 <% if(options.css === 'stylus') { %>
     stylus:
       dev:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: ['css/**/*.styl', '!css/**/_*.styl']
-          dest: 'public'
-          ext: '.css'
-        ]
+        files: cssFiles
         options:
           compress: false
+      dist:
+        files: cssFiles
+        options:
+          compress: true
       options:
         use: [
           require 'axis-css'
@@ -73,39 +105,28 @@ module.exports = (grunt) ->
 <% } else if(options.css === 'less') { %>
     less:
       dev:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: ['css/**/*.less', '!css/**/_*.less']
-          dest: 'public'
-          ext: '.css'
-        ]
+        files: cssFiles
+      dist:
+        files: cssFiles
 <% } if(options.html === 'jade') { %>
     jade:
       dev:
-        files: [
-          expand: true
-          cwd: 'views'
-          src: ['**/*.jade', '!**/_*.jade', '!layout.jade']
-          dest: 'public'
-          ext: '.html'
-        ]
+        files: htmlFiles
         options:
           pretty: true
-          data:
-            lorem: lorem
+      dist:
+        files: htmlFiles
+      options:
+        data:
+          lorem: lorem
 <% } else if(options.html === 'ejs') { %>
     ejs:
       dev:
-        files: [
-          expand: true
-          cwd: 'views'
-          src: ['**/*.ejs', '!**/_*.ejs', '!layout.ejs']
-          dest: 'public'
-          ext: '.html'
-        ]
-        options:
-          lorem: lorem
+        files: htmlFiles
+      dist:
+        files: htmlFiles
+      options:
+        lorem: lorem
 <% } %>
     connect:
       server:
@@ -122,7 +143,7 @@ module.exports = (grunt) ->
       public:
         expand: true
         cwd: 'assets'
-        src: ['**/*', '!css/**/*.styl', '!css/**/*.less', '!js/**/*.coffee']
+        src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
         dest: 'public'
       components:
         expand: true
@@ -148,6 +169,30 @@ module.exports = (grunt) ->
           compile = needsCompile cwd, baseFile, detail.time, content
           include(compile)
 
+    clean: ["public"]
+
+    glob:
+      dev:
+        files: [
+          expand: true
+          cwd: 'public'
+          src: ['**/*.html']
+          dest: 'public'
+          ext: '.html'
+        ]
+      dist:
+        files: [
+          expand: true
+          cwd: 'public'
+          src: ['**/*.html']
+          dest: 'public'
+          ext: '.html'
+        ]
+        options:
+          concat: true
+          minify: true
+
+
   needsCompile = (file, baseFile, time, content) ->
     stat = fs.statSync file
     if stat.isDirectory()
@@ -162,12 +207,16 @@ module.exports = (grunt) ->
       return true if content.indexOf(word) > -1
     return false
 
-  grunt.registerTask 'compile:dev', [
-    'copy'<% if (options.html == 'jade') { %>
-    'jade:dev'<% } else if(options.html == 'ejs') { %>
-    'ejs:dev'<% } if (options.css == 'stylus') { %>
-    'stylus:dev'<% } else if (options.css == 'less') { %>
-    'less:dev'<% } %>
+  compileTasks = (env) -> [
+    'clean'
+    'copy'
+    "<%= htmlTask %>:#{env}"
     'coffee:dev'
+    "<%= cssTask %>:#{env}"
+    "glob:#{env}"
   ]
+
+  grunt.registerTask 'compile:dev', compileTasks('dev')
+  grunt.registerTask 'compile:dist', compileTasks('dist')
+
   grunt.registerTask 'default', ['compile:dev', 'concurrent:start']
