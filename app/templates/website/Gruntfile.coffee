@@ -4,6 +4,7 @@ httpServerPort = 9000
 fs         = require 'fs'
 path       = require 'path'
 loremIpsum = require 'lorem-ipsum'
+_          = require 'lodash'
 
 lorem = (count, options={}) ->
   if typeof count == 'number'
@@ -21,6 +22,7 @@ cssFiles = [
   dest: 'public'
   ext: '.css'
 ]
+cssDistFiles = [_.extend({}, cssFiles[0], {dest: 'dist'})]
 
 htmlFiles = [
   expand: true
@@ -29,6 +31,16 @@ htmlFiles = [
   dest: 'public'
   ext: '.html'
 ]
+htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist'})]
+
+coffeeFiles = [
+  expand: true
+  cwd: 'assets'
+  src: ['js/**/*.coffee']
+  dest: 'public'
+  ext: '.js'
+]
+coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: 'dist'})]
 
 
 module.exports = (grunt) ->
@@ -40,12 +52,12 @@ module.exports = (grunt) ->
     watch:
       public:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>','!assets/js/**/*.coffee']
-        tasks: ['newer:copy:public']
+        tasks: ['newer:copy:dev:public']
         options:
           event: ['changed']
       publicGlob:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
-        tasks: ['copy:public', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['copy:dev:public', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
         options:
           event: ['added', 'deleted']
       coffee:
@@ -81,13 +93,10 @@ module.exports = (grunt) ->
 
     coffee:
       dev:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: ['js/**/*.coffee']
-          dest: 'public'
-          ext: '.js'
-        ]
+        files: coffeeFiles
+      dist:
+        files: coffeeDistFiles
+
 <% if(options.css === 'stylus') { %>
     stylus:
       dev:
@@ -95,7 +104,7 @@ module.exports = (grunt) ->
         options:
           compress: false
       dist:
-        files: cssFiles
+        files: cssDistFiles
         options:
           compress: true
       options:
@@ -107,7 +116,7 @@ module.exports = (grunt) ->
       dev:
         files: cssFiles
       dist:
-        files: cssFiles
+        files: cssDistFiles
 <% } if(options.html === 'jade') { %>
     jade:
       dev:
@@ -115,7 +124,7 @@ module.exports = (grunt) ->
         options:
           pretty: true
       dist:
-        files: htmlFiles
+        files: htmlDistFiles
       options:
         data:
           lorem: lorem
@@ -124,7 +133,7 @@ module.exports = (grunt) ->
       dev:
         files: htmlFiles
       dist:
-        files: htmlFiles
+        files: cssDistFiles
       options:
         lorem: lorem
 <% } %>
@@ -140,16 +149,30 @@ module.exports = (grunt) ->
           livereload: true
 
     copy:
-      public:
-        expand: true
-        cwd: 'assets'
-        src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
-        dest: 'public'
-      components:
-        expand: true
-        cwd: '.components'
-        src: ['**/*', '!**/src/**']
-        dest: 'public/components'
+      dev:
+        files: [
+          expand: true
+          cwd: 'assets'
+          src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
+          dest: 'public'
+        ,
+          expand: true
+          cwd: '.components'
+          src: ['**/*', '!**/src/**']
+          dest: 'public/components'
+        ]
+      dist:
+        files: [
+          expand: true
+          cwd: '.components'
+          src: ['**/*', '!**/src/**']
+          dest: 'dist/components'
+        ,
+          expand: true
+          cwd: 'assets'
+          src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
+          dest: 'dist'
+        ]
 
     concurrent:
       start:
@@ -169,7 +192,9 @@ module.exports = (grunt) ->
           compile = needsCompile cwd, baseFile, detail.time, content
           include(compile)
 
-    clean: ["public"]
+    clean:
+      dev: ['public']
+      dist: ['dist']
 
     glob:
       dev:
@@ -183,9 +208,9 @@ module.exports = (grunt) ->
       dist:
         files: [
           expand: true
-          cwd: 'public'
+          cwd: 'dist'
           src: ['**/*.html']
-          dest: 'public'
+          dest: 'dist'
           ext: '.html'
         ]
         options:
@@ -208,10 +233,10 @@ module.exports = (grunt) ->
     return false
 
   compileTasks = (env) -> [
-    'clean'
-    'copy'
+    "clean:#{env}"
+    "copy:#{env}"
     "<%= htmlTask %>:#{env}"
-    'coffee:dev'
+    "coffee:#{env}"
     "<%= cssTask %>:#{env}"
     "glob:#{env}"
   ]
