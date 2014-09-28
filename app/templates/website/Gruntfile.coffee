@@ -52,12 +52,12 @@ module.exports = (grunt) ->
     watch:
       public:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>','!assets/js/**/*.coffee']
-        tasks: ['newer:copy:dev:public']
+        tasks: ['newer:copy:devPublic']
         options:
           event: ['changed']
       publicGlob:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
-        tasks: ['copy:dev:public', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['copy:devPublic', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
         options:
           event: ['added', 'deleted']
       coffee:
@@ -149,18 +149,16 @@ module.exports = (grunt) ->
           livereload: true
 
     copy:
-      dev:
-        files: [
-          expand: true
-          cwd: 'assets'
-          src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
-          dest: 'public'
-        ,
+      devPublic:
+        expand: true
+        cwd: 'assets'
+        src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
+        dest: 'public'
+      devComponents:
           expand: true
           cwd: '.components'
           src: ['**/*', '!**/src/**']
           dest: 'public/components'
-        ]
       dist:
         files: [
           expand: true
@@ -234,12 +232,18 @@ module.exports = (grunt) ->
 
   compileTasks = (env) -> [
     "clean:#{env}"
-    "copy:#{env}"
+    "makeCopy:#{env}"
     "<%= htmlTask %>:#{env}"
     "coffee:#{env}"
     "<%= cssTask %>:#{env}"
     "glob:#{env}"
   ]
+
+  grunt.registerTask 'makeCopy', (env) ->
+    if env == 'dev'
+      grunt.task.run ["copy:devPublic", "copy:devComponents"]
+    else
+      grunt.task.run ["copy:dist"]
 
   grunt.registerTask 'compile:dev', compileTasks('dev')
   grunt.registerTask 'compile:dist', compileTasks('dist')
