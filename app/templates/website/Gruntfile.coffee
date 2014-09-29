@@ -42,6 +42,15 @@ coffeeFiles = [
 ]
 coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: 'dist'})]
 
+globFiles = [
+  expand: true
+  cwd: 'tmp'
+  src: ['**/*.html']
+  dest: 'tmp'
+  ext: '.html'
+]
+globDistFiles = [_.extend({}, globFiles[0], {dest: 'dist', cwd: 'dist'})]
+
 
 module.exports = (grunt) ->
   require('load-grunt-tasks')(grunt)
@@ -52,75 +61,87 @@ module.exports = (grunt) ->
     watch:
       assets:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>','!assets/js/**/*.coffee']
-        tasks: ['newer:copy:devAssets']
+        tasks: ['newer:copy:tmpAssets']
         options:
           event: ['changed']
       assetsGlob:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
-        tasks: ['copy:devAssets', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['copy:tmpAssets', 'brerror:<%= htmlTask %>:tmp', 'glob:tmp']
         options:
           event: ['added', 'deleted']
       coffee:
         cwd: 'assets/js'
         files: 'assets/js/**/*.coffee'
-        tasks: ['brerror:newer:coffee:dev']
+        tasks: ['brerror:newer:coffee:tmp']
         options:
           event: ['changed']
       coffeeGlob:
         cwd: 'assets/js'
         files: 'assets/js/**/*.coffee'
-        tasks: ['brerror:newer:coffee:dev', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['brerror:newer:coffee:tmp', 'brerror:<%= htmlTask %>:tmp', 'glob:tmp']
         options:
           event: ['added', 'deleted']
       stylesheets:
         cwd: 'assets/css'
         files: 'assets/css/**/*.<%= cssExt %>'
-        tasks: ['brerror:newer:<%= cssTask %>:dev']
+        tasks: ['brerror:newer:<%= cssTask %>:tmp']
         options:
           event: ['changed']
       stylesheetsGlob:
         cwd: 'assets/css'
         files: 'assets/css/**/*.<%= cssExt %>'
-        tasks: ['brerror:newer:<%= cssTask %>:dev', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['brerror:newer:<%= cssTask %>:tmp', 'brerror:<%= htmlTask %>:tmp', 'glob:tmp']
         options:
           event: ['added', 'deleted']
       views:
         cwd: 'views'
         files: 'views/**/*.<%= htmlExt %>'
-        tasks: ['brerror:newer:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['brerror:newer:<%= htmlTask %>:tmp', 'glob:tmp']
       options:
         livereload: livereloadPort
 
     coffee:
-      dev:
+      tmp:
         files: coffeeFiles
+      dev:
+        files: coffeeDistFiles
       dist:
         files: coffeeDistFiles
 
 <% if(options.css === 'stylus') { %>
     stylus:
-      dev:
+      tmp:
         files: cssFiles
+        options:
+          compress: false
+      dev:
+        files: cssDistFiles
         options:
           compress: false
       dist:
         files: cssDistFiles
-        options:
-          compress: true
       options:
         use: [
           require 'axis-css'
         ]
 <% } else if(options.css === 'less') { %>
     less:
-      dev:
+      tmp:
         files: cssFiles
+      dev:
+        files: cssDistFiles
       dist:
         files: cssDistFiles
+        options:
+          compress: true
 <% } if(options.html === 'jade') { %>
     jade:
-      dev:
+      tmp:
         files: htmlFiles
+        options:
+          pretty: true
+      dev:
+        files: htmlDistFiles
         options:
           pretty: true
       dist:
@@ -130,10 +151,12 @@ module.exports = (grunt) ->
           lorem: lorem
 <% } else if(options.html === 'ejs') { %>
     ejs:
-      dev:
+      tmp:
         files: htmlFiles
+      dev:
+        files: htmlDistFiles
       dist:
-        files: cssDistFiles
+        files: htmlDistFiles
       options:
         lorem: lorem
 <% } %>
@@ -149,12 +172,12 @@ module.exports = (grunt) ->
           livereload: true
 
     copy:
-      devAssets:
+      tmpAssets:
         expand: true
         cwd: 'assets'
         src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
         dest: 'tmp'
-      devComponents:
+      tmpComponents:
           expand: true
           cwd: '.components'
           src: ['**/*', '!**/src/**']
@@ -191,26 +214,17 @@ module.exports = (grunt) ->
           include(compile)
 
     clean:
-      dev: ['tmp']
+      tmp: ['tmp']
       dist: ['dist']
+      dev: ['dist']
 
     glob:
+      tmp:
+        files: globFiles
       dev:
-        files: [
-          expand: true
-          cwd: 'tmp'
-          src: ['**/*.html']
-          dest: 'tmp'
-          ext: '.html'
-        ]
+        files: globDistFiles
       dist:
-        files: [
-          expand: true
-          cwd: 'dist'
-          src: ['**/*.html']
-          dest: 'dist'
-          ext: '.html'
-        ]
+        files: globDistFiles
         options:
           concat: true
           minify: true
@@ -252,12 +266,13 @@ module.exports = (grunt) ->
   ]
 
   grunt.registerTask 'makeCopy', (env) ->
-    if env == 'dev'
-      grunt.task.run ["copy:devAssets", "copy:devComponents"]
+    if env == 'tmp'
+      grunt.task.run ["copy:tmpAssets", "copy:tmpComponents"]
     else
       grunt.task.run ["copy:dist"]
 
+  grunt.registerTask 'compile:tmp', compileTasks('tmp')
   grunt.registerTask 'compile:dev', compileTasks('dev')
   grunt.registerTask 'compile:dist', compileTasks('dist')
 
-  grunt.registerTask 'default', ['compile:dev', 'concurrent:start']
+  grunt.registerTask 'default', ['compile:tmp', 'concurrent:start']
