@@ -230,6 +230,18 @@ module.exports = (grunt) ->
       return true if content.indexOf(word) > -1
     return false
 
+  mapFile = (filepath) ->
+    filepath = filepath.replace /^(assets|views)/, 'public'
+    filepath = filepath.replace /\.<%= cssExt %>$/, '.css'
+    filepath = filepath.replace /\.coffee$/, '.js'
+    filepath = filepath.replace /\.<%= htmlExt %>$/, '.html'
+    filepath
+
+  grunt.event.on 'watch', (event, file, task) ->
+    return unless event == 'deleted'
+    filepath = path.join __dirname, mapFile(file)
+    grunt.file.delete(filepath) if fs.existsSync filepath
+
   compileTasks = (env) -> [
     "clean:#{env}"
     "makeCopy:#{env}"
