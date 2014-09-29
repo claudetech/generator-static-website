@@ -19,7 +19,7 @@ cssFiles = [
   expand: true
   cwd: 'assets'
   src: ['css/**/*.<%= cssExt %>', '!css/**/_*. <%= cssExt %>']
-  dest: 'public'
+  dest: 'tmp'
   ext: '.css'
 ]
 cssDistFiles = [_.extend({}, cssFiles[0], {dest: 'dist'})]
@@ -28,7 +28,7 @@ htmlFiles = [
   expand: true
   cwd: 'views'
   src: ['**/*.<%= htmlExt %>', '!**/_*.<%= htmlExt %>', '!layout.<%= htmlExt %>']
-  dest: 'public'
+  dest: 'tmp'
   ext: '.html'
 ]
 htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist'})]
@@ -37,7 +37,7 @@ coffeeFiles = [
   expand: true
   cwd: 'assets'
   src: ['js/**/*.coffee']
-  dest: 'public'
+  dest: 'tmp'
   ext: '.js'
 ]
 coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: 'dist'})]
@@ -50,14 +50,14 @@ module.exports = (grunt) ->
     pkg: grunt.file.readJSON 'package.json'
 
     watch:
-      public:
+      assets:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>','!assets/js/**/*.coffee']
-        tasks: ['newer:copy:devPublic']
+        tasks: ['newer:copy:devAssets']
         options:
           event: ['changed']
-      publicGlob:
+      assetsGlob:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
-        tasks: ['copy:devPublic', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
+        tasks: ['copy:devAssets', 'brerror:<%= htmlTask %>:dev', 'glob:dev']
         options:
           event: ['added', 'deleted']
       coffee:
@@ -143,22 +143,22 @@ module.exports = (grunt) ->
           port: httpServerPort
           keepalive: true
           debug: true
-          base: 'public'
+          base: 'tmp'
           useAvailablePort: true
           open: true
           livereload: true
 
     copy:
-      devPublic:
+      devAssets:
         expand: true
         cwd: 'assets'
         src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
-        dest: 'public'
+        dest: 'tmp'
       devComponents:
           expand: true
           cwd: '.components'
           src: ['**/*', '!**/src/**']
-          dest: 'public/components'
+          dest: 'tmp/components'
       dist:
         files: [
           expand: true
@@ -191,16 +191,16 @@ module.exports = (grunt) ->
           include(compile)
 
     clean:
-      dev: ['public']
+      dev: ['tmp']
       dist: ['dist']
 
     glob:
       dev:
         files: [
           expand: true
-          cwd: 'public'
+          cwd: 'tmp'
           src: ['**/*.html']
-          dest: 'public'
+          dest: 'tmp'
           ext: '.html'
         ]
       dist:
@@ -231,7 +231,7 @@ module.exports = (grunt) ->
     return false
 
   mapFile = (filepath) ->
-    filepath = filepath.replace /^(assets|views)/, 'public'
+    filepath = filepath.replace /^(assets|views)/, 'tmp'
     filepath = filepath.replace /\.<%= cssExt %>$/, '.css'
     filepath = filepath.replace /\.coffee$/, '.js'
     filepath = filepath.replace /\.<%= htmlExt %>$/, '.html'
@@ -253,7 +253,7 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'makeCopy', (env) ->
     if env == 'dev'
-      grunt.task.run ["copy:devPublic", "copy:devComponents"]
+      grunt.task.run ["copy:devAssets", "copy:devComponents"]
     else
       grunt.task.run ["copy:dist"]
 
