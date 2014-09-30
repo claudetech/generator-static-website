@@ -39,7 +39,7 @@ module.exports = yeoman.generators.NamedBase.extend({
 
     copyCommonFiles: function () {
       this.sourceRoot(path.join(__dirname, 'templates/common'));
-      this.copy('gitignore', '.gitignore');
+      this.template('gitignore', '.gitignore');
       this.copy('bowerrc', '.bowerrc');
       if (!this.options.skipGruntfile) {
         this.copy('Gruntfile.coffee', this.options['gruntfile-path']);

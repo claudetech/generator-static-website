@@ -3,4 +3,5 @@
 node_modules/
 /.components/
 /dist/
-/tmp/
+/tmp/<% if (options['is-leaves']) { %>
+/.leavesrc.local<% } %>
