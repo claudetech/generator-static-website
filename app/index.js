@@ -16,6 +16,10 @@ module.exports = yeoman.generators.NamedBase.extend({
       desc: 'Saves config in .yo-rc.json',
       defaults: true
     });
+    this.option('gruntfile-path', {
+      desc: 'Set the path for the Gruntfile',
+      defaults: 'Gruntfile.coffee'
+    });
     this.appname = this.name;
   },
 
@@ -28,7 +32,7 @@ module.exports = yeoman.generators.NamedBase.extend({
 
   configuring: {
     initializeGit: function () {
-      if (!this.options.skipGit) {
+      if (!this.options.skipGit && !this.options['skip-git']) {
         this.spawnCommand('git', ['init']);
       }
     },
@@ -37,6 +41,9 @@ module.exports = yeoman.generators.NamedBase.extend({
       this.sourceRoot(path.join(__dirname, 'templates/common'));
       this.copy('gitignore', '.gitignore');
       this.copy('bowerrc', '.bowerrc');
+      if (!this.options.skipGruntfile) {
+        this.copy('Gruntfile.coffee', this.options['gruntfile-path']);
+      }
     },
   },
 
@@ -69,7 +76,7 @@ module.exports = yeoman.generators.NamedBase.extend({
 
   install: {
     installDependencies: function () {
-      if (!this.options.skipInstall) {
+      if (!this.options.skipInstall && !this.options['skip-install']) {
         this.npmInstall();
         this.bowerInstall();
       }
