@@ -14,3 +14,21 @@
   <li><a href="http://lesscss.org/">Less</a></li><% } %>
   <li><a href="http://coffeescript.org/">CoffeeScript</a></li>
 </ul>
+
+<h3>Lorem ipsum</h3>
+<p>
+  You can use lorem function to generate dummy text.
+  For example, this will generate 20 dummy words.
+  <pre>< %= lorem(20) %></pre>
+</p>
+
+<h3>Script and stylesheets include globbing</h3>
+<p>
+  To include all files all scripts
+  or stylesheets automatically,
+  add <code>glob</code> to your script and link tags
+  and set src to files you want to glob.
+  For example, to include all js and css files.
+  <pre><script src="js/**/*.js" glob></script>
+<link rel="stylesheet" href="css/**/*.css" glob></pre>
+  see <a href="https://github.com/claudetech/node-glob-html">node-glob-html</a> documentation for more info.

@@ -5,6 +5,7 @@ block content
   p You've now created a brand new Leaves site. The page you're looking at is the home page which is located at <b>views/index.jade</b>.
 
   h2 Documentation
+  p Here are the links of the major used libraries and languages.
   ul
     li: a(href='http://claudetech/github.io/leaves') Leaves
     li: a(href='http://jade-lang.com/') jade <% if (options.css === 'stylus') { %>
@@ -12,3 +13,26 @@ block content
     li: a(href='http://roots.cx/axis/') Axis <% } else if (options.css === 'less') { %>
     li: a(href='http://lesscss.org/') Less   <% } %>
     li: a(href='http://coffeescript.org/') CoffeeScript
+
+  h3 Lorem ipsum
+  p
+    | You can use lorem function to generate dummy text.
+    | For example, this will generate 20 dummy words.
+    pre
+      | = lorem(20)
+
+  h3 Script and stylesheets include globbing
+  p
+    | To include all files all scripts
+    | or stylesheets automatically,
+    | add <code>glob</code> to your script and link tags
+    | and set src to files you want to glob.
+    | For example, to include all js and css files.
+    pre
+      | script(src="js/**/*.js" glob)
+      | link(rel="stylesheet" href="css/**/*.css" glob)
+
+    | see
+    a(href="https://github.com/claudetech/node-glob-html")
+      |  node-glob-html
+    |  documentation for more info.
