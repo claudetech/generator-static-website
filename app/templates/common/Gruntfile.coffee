@@ -240,6 +240,8 @@ module.exports = (grunt) ->
           useLocal: true
       dist:
         files: htmlDistFiles
+      options:
+        incompatible: ['glob']
 
 
   needsCompile = (file, baseFile, time, content) ->
