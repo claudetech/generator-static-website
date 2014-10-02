@@ -252,7 +252,7 @@ module.exports = (grunt) ->
         filepath = path.join file, f
         return true if needsCompile filepath, baseFile, time, content
     else
-      return false if file == baseFile || stat.mtime < time
+      return false if file == baseFile || stat.mtime > time
       filename = path.basename(file)
       word = filename.substr(0, filename.lastIndexOf('.'))
       return true if content.indexOf(word) > -1
