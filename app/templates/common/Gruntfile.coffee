@@ -18,7 +18,7 @@ lorem = (count, options={}) ->
 cssFiles = [
   expand: true
   cwd: 'assets'
-  src: ['css/**/*.<%= cssExt %>', '!css/**/_*. <%= cssExt %>']
+  src: ['css/**/*.<%= cssExt %>', '!css/**/_*.<%= cssExt %>']
   dest: 'tmp'
   ext: '.css'
 ]
