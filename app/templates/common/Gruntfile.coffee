@@ -122,7 +122,7 @@ module.exports = (grunt) ->
         files: cssDistFiles
       options:
         use: [
-          require 'axis-css'
+          require 'axis'
         ]
 <% } else if(options.css === 'less') { %>
     less:
