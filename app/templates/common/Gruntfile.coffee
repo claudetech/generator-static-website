@@ -72,7 +72,7 @@ i18nOptions =
     fileFormat: 'yml'
     baseDir: 'dist'
     outputDir: 'dist'
-    exclude: []
+    exclude: ['components/']
     locales: []
     locale: 'en'
     localesPath: 'locales'
