@@ -42,7 +42,7 @@ module.exports = yeoman.generators.NamedBase.extend({
       this.template('gitignore', '.gitignore');
       this.copy('bowerrc', '.bowerrc');
       if (!this.options.skipGruntfile) {
-        this.copy('Gruntfile.coffee', this.options['gruntfile-path']);
+        this.template('Gruntfile.coffee', this.options['gruntfile-path']);
       }
     },
   },
