@@ -6,7 +6,6 @@ path       = require 'path'
 loremIpsum = require 'lorem-ipsum'
 _          = require 'lodash'
 
-defaultLocale = 'en'
 extraConfigFile = '<%= options['is-leaves'] ? '.leavesrc' : '.extra-config'  %>'
 
 extraConfig = {}
