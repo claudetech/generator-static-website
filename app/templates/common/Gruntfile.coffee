@@ -132,7 +132,7 @@ module.exports = (grunt) ->
       views:
         cwd: 'views'
         files: 'views/**/*.<%= htmlExt %>'
-        tasks: ['views:tmp:true:true']
+        tasks: ['views:tmp:true']
       locales:
         files: "#{i18nOptions.options.localesPath}/**/*.#{i18nOptions.options.fileFormat}"
         tasks: ['views:tmp:true']
