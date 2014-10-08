@@ -13,6 +13,7 @@ if fs.existsSync extraConfigFile
   extraConfig = JSON.parse fs.readFileSync(extraConfigFile, 'utf8')
 
 localesDir = extraConfig.i18n?.localesDir ? 'locales'
+htmlOutExt = extraConfig?.html?.ext ? '.html'
 
 lorem = (count, options={}) ->
   if typeof count == 'number'
@@ -37,7 +38,7 @@ templateFiles = [
   cwd: 'views'
   src: ['**/*.<%= htmlExt %>', '!**/_*.<%= htmlExt %>', '!layout.<%= htmlExt %>']
   dest: 'tmp'
-  ext: '.html'
+  ext: htmlOutExt
 ]
 templateDistFiles = [_.extend({}, templateFiles[0], {dest: 'dist'})]
 
@@ -53,9 +54,9 @@ coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: 'dist'})]
 htmlFiles = [
   expand: true
   cwd: 'tmp'
-  src: ['**/*.html']
+  src: ["**/*#{htmlOutExt}"]
   dest: 'tmp'
-  ext: '.html'
+  ext: htmlOutExt
 ]
 htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist'})]
 
