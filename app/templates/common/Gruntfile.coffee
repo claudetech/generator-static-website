@@ -185,9 +185,13 @@ module.exports = (grunt) ->
           pretty: true
       dist:
         files: templateDistFiles
+        options:
+          data:
+            dev: false
       options:
         data:
           lorem: lorem
+          dev: true
 <% } else if(options.html === 'ejs') { %>
     ejs:
       tmp:
@@ -196,8 +200,11 @@ module.exports = (grunt) ->
         files: templateDistFiles
       dist:
         files: templateDistFiles
+        options:
+          dev: false
       options:
         lorem: lorem
+        dev: true
 <% } %>
     connect:
       server:
