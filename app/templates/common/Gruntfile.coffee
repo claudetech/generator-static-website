@@ -8,12 +8,19 @@ _          = require 'lodash'
 
 extraConfigFile = '<%= options['is-leaves'] ? '.leavesrc' : '.extra-config'  %>'
 
-extraConfig = {}
-if fs.existsSync extraConfigFile
-  extraConfig = JSON.parse fs.readFileSync(extraConfigFile, 'utf8')
+defaults =
+  i18n:
+    localesDir: 'locales'
+  html:
+    ext: '.html'
+  css:
+    outdir: 'css'
+  js:
+    outdir: 'js'
 
-localesDir = extraConfig.i18n?.localesDir ? 'locales'
-htmlOutExt = extraConfig?.html?.ext ? '.html'
+extraConfig = defaults
+if fs.existsSync extraConfigFile
+  _.merge extraConfig, JSON.parse fs.readFileSync(extraConfigFile, 'utf8')
 
 lorem = (count, options={}) ->
   if typeof count == 'number'
@@ -26,37 +33,37 @@ lorem = (count, options={}) ->
 <% if (options.html === 'jade') { var htmlTask = 'jade', htmlExt = 'jade'; } else { var htmlTask = 'ejs', htmlExt = 'ejs'; } %>
 cssFiles = [
   expand: true
-  cwd: 'assets'
-  src: ['css/**/*.<%= cssExt %>', '!css/**/_*.<%= cssExt %>']
-  dest: 'tmp'
+  cwd: 'assets/css'
+  src: ['**/*.<%= cssExt %>', '!**/_*.<%= cssExt %>']
+  dest: path.join 'tmp', extraConfig.css.outdir
   ext: '.css'
 ]
-cssDistFiles = [_.extend({}, cssFiles[0], {dest: 'dist'})]
+cssDistFiles = [_.extend {}, cssFiles[0], {dest: path.join('dist', extraConfig.css.outdir)}]
 
 templateFiles = [
   expand: true
   cwd: 'views'
   src: ['**/*.<%= htmlExt %>', '!**/_*.<%= htmlExt %>', '!layout.<%= htmlExt %>']
   dest: 'tmp'
-  ext: htmlOutExt
+  ext: extraConfig.html.ext
 ]
 templateDistFiles = [_.extend({}, templateFiles[0], {dest: 'dist'})]
 
 coffeeFiles = [
   expand: true
-  cwd: 'assets'
-  src: ['js/**/*.coffee']
-  dest: 'tmp'
+  cwd: 'assets/js'
+  src: ['**/*.coffee']
+  dest: path.join 'tmp', extraConfig.js.outdir
   ext: '.js'
 ]
-coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: 'dist'})]
+coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraConfig.js.outdir)})]
 
 htmlFiles = [
   expand: true
   cwd: 'tmp'
-  src: ["**/*#{htmlOutExt}"]
+  src: ["**/*#{extraConfig.html.ext}"]
   dest: 'tmp'
-  ext: htmlOutExt
+  ext: extraConfig.html.ext
 ]
 htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist'})]
 
@@ -76,7 +83,7 @@ i18nOptions =
     exclude: ['components/']
     locales: []
     locale: 'en'
-    localesPath: 'locales'
+    localesPath: extraConfig.i18n.localesDir
 
 if fs.existsSync i18nOptions.options.localesPath
   files = fs.readdirSync i18nOptions.options.localesPath
@@ -222,7 +229,7 @@ module.exports = (grunt) ->
       tmpAssets:
         expand: true
         cwd: 'assets'
-        src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
+        src: ['**/*', '!css', '!js', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
         dest: 'tmp'
       tmpComponents:
           expand: true
@@ -238,7 +245,7 @@ module.exports = (grunt) ->
         ,
           expand: true
           cwd: 'assets'
-          src: ['**/*', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
+          src: ['**/*', '!css', '!js', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
           dest: 'dist'
         ]
 
