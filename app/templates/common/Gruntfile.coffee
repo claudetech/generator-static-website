@@ -61,7 +61,7 @@ coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraCo
 htmlFiles = [
   expand: true
   cwd: 'tmp'
-  src: ["**/*#{extraConfig.html.ext}"]
+  src: ["**/*#{extraConfig.html.ext}", "!**/_*#{extraConfig.html.ext}"]
   dest: 'tmp'
   ext: extraConfig.html.ext
 ]
