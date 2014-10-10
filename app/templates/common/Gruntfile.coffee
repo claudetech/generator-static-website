@@ -21,6 +21,8 @@ defaults =
 extraConfig = defaults
 if fs.existsSync extraConfigFile
   _.merge extraConfig, JSON.parse fs.readFileSync(extraConfigFile, 'utf8')
+extraConfig.dev = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.dev
+extraConfig.dist = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.dist
 
 lorem = (count, options={}) ->
   if typeof count == 'number'
@@ -35,37 +37,41 @@ cssFiles = [
   expand: true
   cwd: 'assets/css'
   src: ['**/*.<%= cssExt %>', '!**/_*.<%= cssExt %>']
-  dest: path.join 'tmp', extraConfig.css.outdir
+  dest: path.join 'tmp', extraConfig.dev.css.outdir
   ext: '.css'
 ]
-cssDistFiles = [_.extend {}, cssFiles[0], {dest: path.join('dist', extraConfig.css.outdir)}]
+cssDevFiles  = [_.extend {}, cssFiles[0], {dest: path.join('dist', extraConfig.dev.css.outdir)}]
+cssDistFiles = [_.extend {}, cssFiles[0], {dest: path.join('dist', extraConfig.dist.css.outdir)}]
 
 templateFiles = [
   expand: true
   cwd: 'views'
   src: ['**/*.<%= htmlExt %>', '!**/_*.<%= htmlExt %>', '!layout.<%= htmlExt %>']
   dest: 'tmp'
-  ext: extraConfig.html.ext
+  ext: extraConfig.dev.html.ext
 ]
-templateDistFiles = [_.extend({}, templateFiles[0], {dest: 'dist'})]
+templateDistFiles = [_.extend({}, templateFiles[0], {dest: 'dist', ext: extraConfig.dist.html.ext})]
+templateDevFiles = [_.extend({}, templateFiles[0], {dest: 'dist'})]
 
 coffeeFiles = [
   expand: true
   cwd: 'assets/js'
   src: ['**/*.coffee']
-  dest: path.join 'tmp', extraConfig.js.outdir
+  dest: path.join 'tmp', extraConfig.dev.js.outdir
   ext: '.js'
 ]
-coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraConfig.js.outdir)})]
+coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraConfig.dist.js.outdir)})]
+coffeeDevFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraConfig.dev.js.outdir)})]
 
 htmlFiles = [
   expand: true
   cwd: 'tmp'
   src: ["**/*#{extraConfig.html.ext}", "!**/_*#{extraConfig.html.ext}"]
   dest: 'tmp'
-  ext: extraConfig.html.ext
+  ext: extraConfig.dev.html.ext
 ]
-htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist'})]
+htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist', ext: extraConfig.dist.html.ext})]
+htmlDevFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist'})]
 
 i18n = false
 
@@ -151,7 +157,7 @@ module.exports = (grunt) ->
       tmp:
         files: coffeeFiles
       dev:
-        files: coffeeDistFiles
+        files: coffeeDevFiles
       dist:
         files: coffeeDistFiles
 
@@ -162,7 +168,7 @@ module.exports = (grunt) ->
         options:
           compress: false
       dev:
-        files: cssDistFiles
+        files: cssDevFiles
         options:
           compress: false
       dist:
@@ -176,7 +182,7 @@ module.exports = (grunt) ->
       tmp:
         files: cssFiles
       dev:
-        files: cssDistFiles
+        files: cssDevFiles
       dist:
         files: cssDistFiles
         options:
@@ -188,7 +194,7 @@ module.exports = (grunt) ->
         options:
           pretty: true
       dev:
-        files: templateDistFiles
+        files: templateDevFiles
         options:
           pretty: true
       dist:
@@ -205,7 +211,7 @@ module.exports = (grunt) ->
       tmp:
         files: templateFiles
       dev:
-        files: templateDistFiles
+        files: templateDevFiles
       dist:
         files: templateDistFiles
         options:
@@ -276,7 +282,7 @@ module.exports = (grunt) ->
       tmp:
         files: htmlFiles
       dev:
-        files: htmlDistFiles
+        files: htmlDevFiles
       dist:
         files: htmlDistFiles
         options:
@@ -289,7 +295,7 @@ module.exports = (grunt) ->
         options:
           useLocal: true
       dev:
-        files: htmlDistFiles
+        files: htmlDevFiles
         options:
           useLocal: true
       dist:
