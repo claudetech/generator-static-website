@@ -318,6 +318,7 @@ module.exports = (grunt) ->
     else
       return false if file == baseFile || stat.mtime > time
       filename = path.basename(file)
+      return false if filename[0] == '.'
       word = filename.substr(0, filename.lastIndexOf('.'))
       return true if content.indexOf(word) > -1
     return false
