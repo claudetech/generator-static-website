@@ -118,40 +118,40 @@ module.exports = (grunt) ->
           event: ['changed']
       assetsGlob:
         files: ['assets/**/*', '!assets/css/**/*.<%= cssExt %>', '!assets/js/**/*.coffee']
-        tasks: ['copy:tmpAssets', 'views:tmp:true']
+        tasks: ['copy:tmpAssets', 'runViews:tmp:true']
         options:
           event: ['added', 'deleted']
       coffee:
         cwd: 'assets/js'
         files: 'assets/js/**/*.coffee'
-        tasks: ['brerror:newer:coffee:tmp']
+        tasks: ['runCoffee:tmp:true:true']
         options:
           event: ['changed']
       coffeeGlob:
         cwd: 'assets/js'
         files: 'assets/js/**/*.coffee'
-        tasks: ['brerror:newer:coffee:tmp', 'views:tmp:true']
+        tasks: ['runCoffee:tmp:true:true', 'runViews:tmp:true']
         options:
           event: ['added', 'deleted']
       stylesheets:
         cwd: 'assets/css'
         files: 'assets/css/**/*.<%= cssExt %>'
-        tasks: ['brerror:newer:<%= cssTask %>:tmp']
+        tasks: ['run<%= _.capitalize(cssTask) %>:tmp:true:true']
         options:
           event: ['changed']
       stylesheetsGlob:
         cwd: 'assets/css'
         files: 'assets/css/**/*.<%= cssExt %>'
-        tasks: ['brerror:newer:<%= cssTask %>:tmp', 'views:tmp:true']
+        tasks: ['run<%= _.capitalize(cssTask) %>:tmp:true:true', 'runViews:tmp:true']
         options:
           event: ['added', 'deleted']
       views:
         cwd: 'views'
         files: 'views/**/*.<%= htmlExt %>'
-        tasks: ['views:tmp:true']
+        tasks: ['runViews:tmp:true']
       locales:
         files: "#{i18nOptions.options.localesPath}/**/*.#{i18nOptions.options.fileFormat}"
-        tasks: ['views:tmp:true']
+        tasks: ['runViews:tmp:true']
       options:
         livereload: livereloadPort
 
@@ -365,12 +365,21 @@ module.exports = (grunt) ->
     'views'
   ]
 
+  suffixedTasks = ['views']
+
   _.each compileTasks, (task) ->
     capTask = capitalize(task)
-    grunt.registerTask "run#{capTask}", (env) ->
+    grunt.registerTask "run#{capTask}", (env, newer, brerror) ->
+      [prefix, suffix] = ['', '']
+      if task in suffixedTasks
+        suffix += ':true' if newer
+        suffix += ':true' if brerror
+      else
+        prefix += 'brerror:' if brerror
+        prefix += 'newer:' if newer
       tasks = []
       tasks.push "before#{capTask}:#{env}" if grunt.task.exists("before#{capTask}")
-      tasks.push "#{task}:#{env}"
+      tasks.push "#{prefix}#{task}:#{env}#{suffix}"
       tasks.push "after#{capTask}:#{env}" if grunt.task.exists("after#{capTask}")
       grunt.task.run tasks
 
