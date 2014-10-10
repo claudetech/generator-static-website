@@ -376,6 +376,8 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'compile', 'Compiles the website', (env) ->
     tasks = _.map compileTasks, (t) -> "run#{capitalize(t)}:#{env}"
+    tasks.unshift "beforeCompile:#{env}" if grunt.task.exists("beforeCompile")
+    tasks.push "afterCompile:#{env}" if grunt.task.exists("afterCompile")
     grunt.task.run tasks
 
   grunt.registerTask 'default', ['compile:tmp', 'concurrent:start']
