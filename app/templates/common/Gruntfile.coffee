@@ -24,6 +24,8 @@ if fs.existsSync extraConfigFile
 extraConfig.dev = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.dev
 extraConfig.dist = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.dist
 
+capitalize = (s) -> s[0].toUpperCase() + s.substring(1)
+
 lorem = (count, options={}) ->
   if typeof count == 'number'
     options.count = count
@@ -354,14 +356,29 @@ module.exports = (grunt) ->
     tasks.push "i18n:#{env}" if i18n
     grunt.task.run tasks
 
+  compileTasks = [
+    'clean'
+    'makeCopy'
+    '<%= cssTask %>'
+    'coffee'
+    'views'
+  ]
+
+  _.each compileTasks, (task) ->
+    capTask = capitalize(task)
+    grunt.registerTask "run#{capTask}", (env) ->
+      tasks = []
+      tasks.push "before#{capTask}:#{env}" if grunt.task.exists("before#{capTask}")
+      tasks.push "#{task}:#{env}"
+      tasks.push "after#{capTask}:#{env}" if grunt.task.exists("after#{capTask}")
+      grunt.task.run tasks
+
 
   grunt.registerTask 'compile', 'Compiles the website', (env) ->
-    grunt.task.run [
-      "clean:#{env}"
-      "makeCopy:#{env}"
-      "coffee:#{env}"
-      "<%= cssTask %>:#{env}"
-      "views:#{env}"
-    ]
+    tasks = _.map compileTasks, (t) -> "run#{capitalize(t)}:#{env}"
+    grunt.task.run tasks
 
   grunt.registerTask 'default', ['compile:tmp', 'concurrent:start']
+
+  if fs.existsSync('grunt.overrides.coffee') || fs.existsSync('grunt.overrides.js')
+    require('./grunt.overrides')(grunt, extraConfig)
