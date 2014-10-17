@@ -203,6 +203,7 @@ module.exports = (grunt) ->
         files: templateDistFiles
         options:
           data:
+            lorem: lorem
             dev: false
       options:
         data:
@@ -217,6 +218,7 @@ module.exports = (grunt) ->
       dist:
         files: templateDistFiles
         options:
+          lorem: lorem
           dev: false
       options:
         lorem: lorem
