@@ -1,6 +1,3 @@
-livereloadPort = 35729
-httpServerPort = 9000
-
 fs         = require 'fs'
 path       = require 'path'
 loremIpsum = require 'lorem-ipsum'
@@ -17,6 +14,9 @@ defaults =
     outdir: 'css'
   js:
     outdir: 'js'
+  ports:
+    http: 9000
+    livereload: 35729
 
 extraConfig = defaults
 if fs.existsSync extraConfigFile
@@ -153,7 +153,7 @@ module.exports = (grunt) ->
         files: "#{i18nOptions.options.localesPath}/**/*.#{i18nOptions.options.fileFormat}"
         tasks: ['runViews:tmp:true']
       options:
-        livereload: livereloadPort
+        livereload: extraConfig.ports.livereload
 
     coffee:
       tmp:
@@ -227,13 +227,13 @@ module.exports = (grunt) ->
     connect:
       server:
         options:
-          port: httpServerPort
+          port: extraConfig.ports.http
           keepalive: true
           debug: true
           base: 'tmp'
           useAvailablePort: true
           open: true
-          livereload: true
+          livereload: extraConfig.ports.livereload
 
     copy:
       tmpAssets:
