@@ -153,7 +153,8 @@ module.exports = (grunt) ->
         files: "#{i18nOptions.options.localesPath}/**/*.#{i18nOptions.options.fileFormat}"
         tasks: ['runViews:tmp:true']
       options:
-        livereload: extraConfig.ports.livereload
+        livereload:
+          port: extraConfig.ports.livereload
 
     coffee:
       tmp:
