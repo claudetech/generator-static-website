@@ -1,6 +1,7 @@
 fs         = require 'fs'
 path       = require 'path'
 loremIpsum = require 'lorem-ipsum'
+dummyImage = require 'dummy-image'
 _          = require 'lodash'
 
 extraConfigFile = '<%= options['is-leaves'] ? '.leavesrc' : '.extra-config'  %>'
@@ -25,6 +26,18 @@ extraConfig.dev = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.de
 extraConfig.dist = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.dist
 
 capitalize = (s) -> s[0].toUpperCase() + s.substring(1)
+
+dumimg = (dist, dir) ->
+  (options) ->
+    if _.isNumber(options) || _.isString(options)
+      [width, height, type, replace] = arguments
+    options = {width: width, height: height, type: type, replace: replace}
+    return options.replace if options.replace? && dist
+    baseDir = path.join(__dirname, dir)
+    options.outputDir = path.join(baseDir, 'img')
+    imgPath = dummyImage(options)
+    path.relative(baseDir, imgPath)
+
 
 lorem = (count, options={}) ->
   if typeof count == 'number'
@@ -200,16 +213,22 @@ module.exports = (grunt) ->
         files: templateDevFiles
         options:
           pretty: true
+          data:
+            lorem: lorem
+            dev: true
+            dumimg: dumimg(false, 'dist')
       dist:
         files: templateDistFiles
         options:
           data:
             lorem: lorem
             dev: false
+          dumimg: dumimg(true, 'dist')
       options:
         data:
           lorem: lorem
           dev: true
+          dumimg: dumimg(false, 'tmp')
 <% } else if(options.html === 'ejs') { %>
     ejs:
       tmp:
