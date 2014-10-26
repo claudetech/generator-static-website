@@ -224,7 +224,7 @@ module.exports = (grunt) ->
           data:
             lorem: lorem
             dev: false
-          dumimg: dumimg(true, 'dist')
+            dumimg: dumimg(true, 'dist')
       options:
         data:
           lorem: lorem
@@ -236,14 +236,20 @@ module.exports = (grunt) ->
         files: templateFiles
       dev:
         files: templateDevFiles
+        options:
+          lorem: lorem
+          dev: true
+          dumimg: dumimg(false, 'dist')
       dist:
         files: templateDistFiles
         options:
           lorem: lorem
           dev: false
+          dumimg: dumimg(true, 'dist')
       options:
         lorem: lorem
         dev: true
+        dumimg: dumimg(false, 'tmp')
 <% } %>
     connect:
       server:
