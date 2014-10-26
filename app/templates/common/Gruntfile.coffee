@@ -38,7 +38,6 @@ dumimg = (dist, dir) ->
     imgPath = dummyImage(options)
     path.relative(baseDir, imgPath)
 
-
 lorem = (count, options={}) ->
   if typeof count == 'number'
     options.count = count
@@ -165,9 +164,11 @@ module.exports = (grunt) ->
       locales:
         files: "#{i18nOptions.options.localesPath}/**/*.#{i18nOptions.options.fileFormat}"
         tasks: ['runViews:tmp:true']
-      options:
-        livereload:
-          port: extraConfig.ports.livereload
+      livereload:
+        files: ['tmp/**/*']
+        options:
+          livereload:
+            port: extraConfig.ports.livereload
 
     coffee:
       tmp:
