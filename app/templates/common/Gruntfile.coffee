@@ -421,5 +421,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['compile:tmp', 'concurrent:start']
 
-  if fs.existsSync('grunt.overrides.coffee') || fs.existsSync('grunt.overrides.js')
-    require('./grunt.overrides')(grunt, extraConfig)
+  if fs.existsSync('grunt.hooks.coffee') || fs.existsSync('grunt.hooks.js')
+    require('./grunt.hooks')(grunt, extraConfig)
