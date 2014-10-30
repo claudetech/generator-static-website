@@ -33,7 +33,9 @@ module.exports = yeoman.generators.NamedBase.extend({
   configuring: {
     initializeGit: function () {
       if (!this.options.skipGit && !this.options['skip-git']) {
-        this.spawnCommand('git', ['init']);
+        this.spawnCommand('git', ['init']).on('error', function () {
+          console.warn('Git does not seem to be available. Some of the functionalities will not be available.');
+        });
       }
     },
 
