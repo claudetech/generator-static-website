@@ -31,6 +31,7 @@ dumimg = (dist, dir) ->
   (options) ->
     if _.isNumber(options) || _.isString(options)
       [width, height, type, replace] = arguments
+      height = width unless height
       options = {width: width, height: height, type: type, replace: replace}
     return options.replace if options.replace? && dist
     baseDir = path.join(__dirname, dir)
