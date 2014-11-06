@@ -27,18 +27,27 @@ extraConfig.dist = _.merge {}, _.omit(extraConfig, 'dev', 'dist'), extraConfig.d
 
 capitalize = (s) -> s[0].toUpperCase() + s.substring(1)
 
+generatedImages = []
+
 dumimg = (dist, dir) ->
   (options) ->
     if _.isNumber(options) || _.isString(options)
       [width, height, type, replace] = arguments
       height = width unless height
       options = {width: width, height: height, type: type, replace: replace}
+
     return options.replace if options.replace? && dist
+
+    generated = _.find(generatedImages, options)
+    return generated.path if generated
+    generatedOptions = _.clone(options)
+    generatedImages.push(generatedOptions)
+
     baseDir = path.join(__dirname, dir)
     options.outputDir = path.join(baseDir, 'img', 'dummy')
     fs.mkdirSync options.outputDir unless fs.existsSync options.outputDir
     imgPath = dummyImage(options)
-    path.relative(baseDir, imgPath)
+    generatedOptions.path = path.relative(baseDir, imgPath)
 
 lorem = (count, options={}) ->
   if typeof count == 'number'
