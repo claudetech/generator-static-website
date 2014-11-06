@@ -170,6 +170,8 @@ module.exports = (grunt) ->
         options:
           livereload:
             port: extraConfig.ports.livereload
+      options:
+        spawn: false
 
     coffee:
       tmp:

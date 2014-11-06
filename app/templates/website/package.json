@@ -20,7 +20,7 @@
     "grunt-html-glob": "^0.2.1",
     "grunt-newer": "^0.7.0",
     "grunt-contrib-imagemin": "^0.9.1",
-    "grunt-brerror": "^0.1.4",
+    "grunt-brerror": "^0.1.5",
     "uglify-js": "^2.4.15",
     "dummy-image": "^0.2.2",
     "marked": "^0.3.2",
