@@ -18,6 +18,9 @@ defaults =
   ports:
     http: 9000
     livereload: 35729
+  dir:
+    tmp: 'tmp'
+    dist: 'dist'
 
 extraConfig = defaults
 if fs.existsSync extraConfigFile
@@ -62,55 +65,55 @@ cssFiles = [
   expand: true
   cwd: 'assets/css'
   src: ['**/*.<%= cssExt %>', '!**/_*.<%= cssExt %>']
-  dest: path.join 'tmp', extraConfig.dev.css.outdir
+  dest: path.join extraConfig.dir.tmp, extraConfig.dev.css.outdir
   ext: '.css'
 ]
-cssDevFiles  = [_.extend {}, cssFiles[0], {dest: path.join('dist', extraConfig.dev.css.outdir)}]
-cssDistFiles = [_.extend {}, cssFiles[0], {dest: path.join('dist', extraConfig.dist.css.outdir)}]
+cssDevFiles  = [_.extend {}, cssFiles[0], {dest: path.join(extraConfig.dir.dist, extraConfig.dev.css.outdir)}]
+cssDistFiles = [_.extend {}, cssFiles[0], {dest: path.join(extraConfig.dir.dist, extraConfig.dist.css.outdir)}]
 
 templateFiles = [
   expand: true
   cwd: 'views'
   src: ['**/*.<%= htmlExt %>', '!**/_*.<%= htmlExt %>', '!layout.<%= htmlExt %>']
-  dest: 'tmp'
+  dest: extraConfig.dir.tmp
   ext: extraConfig.dev.html.ext
 ]
-templateDistFiles = [_.extend({}, templateFiles[0], {dest: 'dist', ext: extraConfig.dist.html.ext})]
-templateDevFiles = [_.extend({}, templateFiles[0], {dest: 'dist'})]
+templateDistFiles = [_.extend({}, templateFiles[0], {dest: extraConfig.dir.dist, ext: extraConfig.dist.html.ext})]
+templateDevFiles = [_.extend({}, templateFiles[0], {dest: extraConfig.dir.dist})]
 
 coffeeFiles = [
   expand: true
   cwd: 'assets/js'
   src: ['**/*.coffee']
-  dest: path.join 'tmp', extraConfig.dev.js.outdir
+  dest: path.join extraConfig.dir.tmp, extraConfig.dev.js.outdir
   ext: '.js'
 ]
-coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraConfig.dist.js.outdir)})]
-coffeeDevFiles = [_.extend({}, coffeeFiles[0], {dest: path.join('dist', extraConfig.dev.js.outdir)})]
+coffeeDistFiles = [_.extend({}, coffeeFiles[0], {dest: path.join(extraConfig.dir.dist, extraConfig.dist.js.outdir)})]
+coffeeDevFiles = [_.extend({}, coffeeFiles[0], {dest: path.join(extraConfig.dir.dist, extraConfig.dev.js.outdir)})]
 
 htmlFiles = [
   expand: true
-  cwd: 'tmp'
+  cwd: extraConfig.dir.tmp
   src: ["**/*#{extraConfig.html.ext}", "!**/_*#{extraConfig.html.ext}", "!components/**"]
-  dest: 'tmp'
+  dest: extraConfig.dir.tmp
   ext: extraConfig.dev.html.ext
 ]
-htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist', ext: extraConfig.dist.html.ext})]
-htmlDevFiles = [_.extend({}, htmlFiles[0], {dest: 'dist', cwd: 'dist'})]
+htmlDistFiles = [_.extend({}, htmlFiles[0], {dest: extraConfig.dir.dist, cwd: extraConfig.dir.dist, ext: extraConfig.dist.html.ext})]
+htmlDevFiles = [_.extend({}, htmlFiles[0], {dest: extraConfig.dir.dist, cwd: extraConfig.dir.dist})]
 
 i18n = false
 
 i18nOptions =
   tmp:
     options:
-      baseDir: 'tmp'
-      outputDir: 'tmp'
+      baseDir: extraConfig.dir.tmp
+      outputDir: extraConfig.dir.tmp
   dev: {}
   dist: {}
   options:
     fileFormat: 'yml'
-    baseDir: 'dist'
-    outputDir: 'dist'
+    baseDir: extraConfig.dir.dist
+    outputDir: extraConfig.dir.dist
     exclude: ['components/']
     locales: []
     locale: 'en'
@@ -229,19 +232,19 @@ module.exports = (grunt) ->
           data:
             lorem: lorem
             dev: true
-            dumimg: dumimg(false, 'dist')
+            dumimg: dumimg(false, extraConfig.dir.dist)
       dist:
         files: templateDistFiles
         options:
           data:
             lorem: lorem
             dev: false
-            dumimg: dumimg(true, 'dist')
+            dumimg: dumimg(true, extraConfig.dir.dist)
       options:
         data:
           lorem: lorem
           dev: true
-          dumimg: dumimg(false, 'tmp')
+          dumimg: dumimg(false, extraConfig.dir.tmp)
 <% } else if(options.html === 'ejs') { %>
     ejs:
       tmp:
@@ -251,17 +254,17 @@ module.exports = (grunt) ->
         options:
           lorem: lorem
           dev: true
-          dumimg: dumimg(false, 'dist')
+          dumimg: dumimg(false, extraConfig.dir.dist)
       dist:
         files: templateDistFiles
         options:
           lorem: lorem
           dev: false
-          dumimg: dumimg(true, 'dist')
+          dumimg: dumimg(true, extraConfig.dir.dist)
       options:
         lorem: lorem
         dev: true
-        dumimg: dumimg(false, 'tmp')
+        dumimg: dumimg(false, extraConfig.dir.tmp)
 <% } %>
     connect:
       server:
@@ -269,7 +272,7 @@ module.exports = (grunt) ->
           port: extraConfig.ports.http
           keepalive: true
           debug: true
-          base: 'tmp'
+          base: extraConfig.dir.tmp
           useAvailablePort: true
           open: true
           livereload: extraConfig.ports.livereload
@@ -279,7 +282,7 @@ module.exports = (grunt) ->
         expand: true
         cwd: 'assets'
         src: ['**/*', '!css', '!js', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee']
-        dest: 'tmp'
+        dest: extraConfig.dir.tmp
       tmpComponents:
           expand: true
           cwd: '.components'
@@ -295,7 +298,7 @@ module.exports = (grunt) ->
           expand: true
           cwd: 'assets'
           src: ['**/*', '!css', '!js', '!css/**/*.<%= cssExt %>', '!js/**/*.coffee', '!img/**/*.{png,jpg,gif}']
-          dest: 'dist'
+          dest: extraConfig.dir.dist
         ]
 
     imagemin:
@@ -304,7 +307,7 @@ module.exports = (grunt) ->
           expand: true
           cwd: 'assets'
           src: ['img/**/*.{png,jpg,gif}']
-          dest: 'dist'
+          dest: extraConfig.dir.dist
         ]
       tmp: {}
       dev: {}
@@ -328,9 +331,9 @@ module.exports = (grunt) ->
           include(compile)
 
     clean:
-      tmp: ['tmp']
-      dist: ['dist']
-      dev: ['dist']
+      tmp: [extraConfig.dir.tmp]
+      dist: [extraConfig.dir.dist]
+      dev: [extraConfig.dir.dist]
 
     glob:
       tmp:
@@ -376,7 +379,7 @@ module.exports = (grunt) ->
     return false
 
   mapFile = (filepath) ->
-    filepath = filepath.replace /^(assets|views)/, 'tmp'
+    filepath = filepath.replace /^(assets|views)/, extraConfig.dir.tmp
     filepath = filepath.replace /\.<%= cssExt %>$/, '.css'
     filepath = filepath.replace /\.coffee$/, '.js'
     filepath = filepath.replace /\.<%= htmlExt %>$/, '.html'
