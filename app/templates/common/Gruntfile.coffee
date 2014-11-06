@@ -35,7 +35,8 @@ dumimg = (dist, dir) ->
       options = {width: width, height: height, type: type, replace: replace}
     return options.replace if options.replace? && dist
     baseDir = path.join(__dirname, dir)
-    options.outputDir = path.join(baseDir, 'img')
+    options.outputDir = path.join(baseDir, 'img', 'dummy')
+    fs.mkdirSync options.outputDir unless fs.existsSync options.outputDir
     imgPath = dummyImage(options)
     path.relative(baseDir, imgPath)
 
@@ -165,13 +166,12 @@ module.exports = (grunt) ->
       locales:
         files: "#{i18nOptions.options.localesPath}/**/*.#{i18nOptions.options.fileFormat}"
         tasks: ['runViews:tmp:true']
-      livereload:
-        files: ['tmp/**/*']
-        options:
-          livereload:
-            port: extraConfig.ports.livereload
+      dummy_images:
+        files: ['tmp/img/dummy/*']
       options:
         spawn: false
+        livereload:
+            port: extraConfig.ports.livereload
 
     coffee:
       tmp:
