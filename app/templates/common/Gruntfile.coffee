@@ -425,6 +425,7 @@ module.exports = (grunt) ->
       tasks.push "before#{capTask}:#{env}" if grunt.task.exists("before#{capTask}")
       tasks.push "#{prefix}#{task}:#{env}#{suffix}"
       tasks.push "after#{capTask}:#{env}" if grunt.task.exists("after#{capTask}")
+      grunt.event.emit "#{task}.run", env
       grunt.task.run tasks
 
 
@@ -438,3 +439,5 @@ module.exports = (grunt) ->
 
   if fs.existsSync('grunt.hooks.coffee') || fs.existsSync('grunt.hooks.js')
     require('./grunt.hooks')(grunt, extraConfig)
+
+  grunt.event.emit 'loaded'
