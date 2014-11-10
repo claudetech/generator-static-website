@@ -21,6 +21,8 @@ defaults =
   dir:
     tmp: 'tmp'
     dist: 'dist'
+  app:
+    singlePage: false
 
 extraConfig = defaults
 if fs.existsSync extraConfigFile
@@ -276,6 +278,23 @@ module.exports = (grunt) ->
           useAvailablePort: true
           open: true
           livereload: extraConfig.ports.livereload
+          middleware: (connect, options, middlewares) ->
+            middlewares.push (req, res, next) ->
+              return next() unless req.headers['accept'].indexOf('text/html') >= 0
+              return next() unless extraConfig.app.singlePage
+
+              file = extraConfig.app.singlePage
+              file = 'index.html' unless path.extname(file) == '.html'
+              filepath = path.join(extraConfig.dir.tmp, file)
+              stat = fs.statSync filepath
+              res.writeHead 200,
+                'Content-Type': 'text/html'
+                'Content-Length': stat.size
+              res.write fs.readFileSync(filepath)
+              res.end()
+              next()
+
+            middlewares
 
     copy:
       tmpAssets:
