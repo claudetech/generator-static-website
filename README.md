@@ -1,13 +1,13 @@
 # generator-static-website
 
 Yeoman generator to create static websites with
-[Stylus](http://learnboost.github.io/stylus/), 
-[Jade](http://jade-lang.com/) and 
+[Stylus](http://learnboost.github.io/stylus/),
+[Jade](http://jade-lang.com/) and
 [CoffeeScript](http://coffeescript.org/).
 
 ## Installation
 
-Run 
+Run
 
 ```
 npm install -g yo grunt-cli generator-static-website
@@ -53,7 +53,6 @@ yo static-website MY_WEBSITE --html=ejs
 
 ## Features
 
-* Support for [Axis CSS](http://roots.cx/axis/) when using Stylus
 * [Lorem Ipsum generator](https://github.com/knicklabs/lorem-ipsum.js):
   You can use the lorem ipsum generator as the function `lorem` in all Jade/EJS templates:
 

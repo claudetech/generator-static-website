@@ -207,10 +207,6 @@ module.exports = (grunt) ->
           compress: false
       dist:
         files: cssDistFiles
-      options:
-        use: [
-          require 'axis'
-        ]
 <% } else if(options.css === 'less') { %>
     less:
       tmp:

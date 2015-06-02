@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "axis": "^0.3.0",
     "coffee-script": "^1.7.1",
     "grunt": "^0.4.5",
     "grunt-concurrent-ct": "^0.6.1",
